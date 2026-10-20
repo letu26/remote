@@ -3,3 +3,4 @@
 !.env.example
 certs/
 node_modules/
+dist/
