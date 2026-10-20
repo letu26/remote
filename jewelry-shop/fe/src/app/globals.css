@@ -1,0 +1,199 @@
+@import "tailwindcss";
+
+/*
+ * Hệ thống thiết kế: trắng kem + vàng gold.
+ * Mọi màu/bóng/bo góc đi qua biến CSS ở đây; đổi giao diện chỉ cần sửa file này.
+ */
+:root {
+  /* Nền */
+  --page: #f1f7f6; /* xanh nhạt, nền trang */
+  --paper: #ffffff; /* thẻ, ô nhập */
+  --sand: #e6f1ef; /* xanh nhạt đậm hơn, khối nhấn */
+  --line: #d9e8e5; /* viền */
+  --line-strong: #b4cfca;
+
+  /* Chữ */
+  --ink: #16302d; /* chữ chính */
+  --muted: #55706c; /* chữ phụ (~5:1) */
+
+  /* Màu nhấn xanh ngọc (tên biến "gold" giữ nguyên để không phải sửa toàn bộ component) */
+  --gold: #2fb592; /* trang trí, đường kẻ */
+  --gold-deep: #0f7a65; /* nút, liên kết (chữ trắng ~5.3:1) */
+  --gold-deeper: #0b5f4e; /* hover */
+  --gold-tint: #dff3ee; /* nền nhẹ */
+
+  /* Trạng thái */
+  --danger: #b3382c;
+  --success: #2f7d4f;
+  --sale: #b3382c;
+
+  /* Bóng, bo góc */
+  --shadow-card: 0 2px 6px rgb(22 48 45 / 0.04), 0 8px 24px rgb(22 48 45 / 0.05);
+  --shadow-pop: 0 12px 32px rgb(22 48 45 / 0.14);
+  --radius-ui: 0.75rem;
+
+  /* Chuyển động: chỉ transform/opacity, 150-250ms */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 180ms;
+}
+
+@theme inline {
+  --color-page: var(--page);
+  --color-paper: var(--paper);
+  --color-sand: var(--sand);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-gold: var(--gold);
+  --color-gold-deep: var(--gold-deep);
+  --color-gold-deeper: var(--gold-deeper);
+  --color-gold-tint: var(--gold-tint);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-sale: var(--sale);
+  --font-sans: var(--font-be-vietnam), system-ui, sans-serif;
+  --font-serif: var(--font-cormorant), Georgia, serif;
+  --shadow-card: var(--shadow-card);
+  --shadow-pop: var(--shadow-pop);
+  --radius-ui: var(--radius-ui);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  background:
+    radial-gradient(60rem 30rem at 10% -10%, #dcf3ec 0%, transparent 60%),
+    radial-gradient(50rem 30rem at 100% 0%, #e3eefb 0%, transparent 55%),
+    var(--page);
+  background-attachment: fixed;
+  color: var(--ink);
+  font-family: var(--font-be-vietnam), system-ui, sans-serif;
+}
+
+::selection {
+  background: var(--gold);
+  color: #fff;
+}
+
+/* Focus rõ ràng cho mọi phần tử tương tác */
+:focus-visible {
+  outline: 2px solid var(--gold-deep);
+  outline-offset: 2px;
+}
+
+@keyframes drawer-in-left {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+@keyframes drawer-in-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes pop-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+.anim-drawer-left { animation: drawer-in-left 0.24s var(--ease); }
+.anim-drawer-right { animation: drawer-in-right 0.24s var(--ease); }
+.anim-fade { animation: fade-in 0.18s var(--ease); }
+.anim-pop { animation: pop-in 0.2s var(--ease); }
+.anim-page { animation: page-in 0.22s var(--ease); }
+.img-fade { animation: fade-in 0.35s var(--ease); }
+.press { transition: transform var(--dur) var(--ease); }
+.press:active { transform: scale(0.98); }
+.skeleton {
+  background: linear-gradient(90deg, var(--sand) 25%, #f4faf8 50%, var(--sand) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: none; }
+}
+.anim-toast { animation: toast-in 0.2s var(--ease); }
+
+/* SweetAlert2 (xác nhận): theo hệ thiết kế kem + gold, không dùng màu mặc định của thư viện. */
+.swal2-container { padding: 1rem; }
+.swal2-container .swal-popup {
+  width: 100%;
+  max-width: 26rem;
+  padding: 1.75rem 1.5rem 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: inherit;
+  box-shadow: var(--shadow-pop);
+}
+.swal2-container .swal-title {
+  padding: 0;
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+.swal2-container .swal-text {
+  margin: 0.75rem 0 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.swal2-container .swal-actions { gap: 0.625rem; margin-top: 1.5rem; width: 100%; }
+.swal2-container .swal-btn {
+  flex: 1 1 auto;
+  min-height: 2.5rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius-ui);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+.swal2-container .swal-btn:focus-visible {
+  outline: 2px solid var(--gold-deep);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+.swal2-container .swal-btn-primary { background: var(--gold-deep); color: #fff; border: 1px solid var(--gold-deep); }
+.swal2-container .swal-btn-primary:hover { background: var(--gold-deeper); }
+.swal2-container .swal-btn-danger { background: var(--danger); color: #fff; border: 1px solid var(--danger); }
+.swal2-container .swal-btn-danger:hover { filter: brightness(0.92); }
+.swal2-container .swal-btn-ghost { background: var(--paper); color: var(--ink); border: 1px solid var(--line-strong); }
+.swal2-container .swal-btn-ghost:hover { background: var(--sand); }
+.swal2-container .swal-icon-warning { border-color: var(--danger); color: var(--danger); }
+.swal2-container .swal-icon-question { border-color: var(--gold); color: var(--gold-deep); }
+@media (max-width: 480px) {
+  .swal2-container .swal-actions { flex-direction: column-reverse; }
+  .swal2-container .swal-btn { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .swal2-container, .swal2-container * { animation: none !important; transition: none !important; }
+}

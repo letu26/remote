@@ -1,0 +1,469 @@
+{
+  "categories": [
+    {
+      "slug": "nhan",
+      "name": "Nhẫn",
+      "sortOrder": 1
+    },
+    {
+      "slug": "day-chuyen",
+      "name": "Dây chuyền",
+      "sortOrder": 2
+    },
+    {
+      "slug": "bong-tai",
+      "name": "Bông tai",
+      "sortOrder": 3
+    },
+    {
+      "slug": "lac-vong-tay",
+      "name": "Lắc và vòng tay",
+      "sortOrder": 4
+    },
+    {
+      "slug": "da-quy",
+      "name": "Đá quý",
+      "sortOrder": 5
+    }
+  ],
+  "materials": [
+    "Vàng 10K",
+    "Vàng 14K",
+    "Vàng 18K",
+    "Vàng 24K",
+    "Vàng trắng",
+    "Vàng hồng",
+    "Bạc",
+    "Bạch kim"
+  ],
+  "gemstones": [
+    "Kim cương",
+    "Ruby",
+    "Sapphire",
+    "Ngọc trai",
+    "Emerald"
+  ],
+  "collections": [
+    {
+      "slug": "aurelia",
+      "name": "Aurelia",
+      "description": "Kim cương trắng sáng, đường nét tối giản."
+    },
+    {
+      "slug": "camellia",
+      "name": "Camellia",
+      "description": "Sắc đỏ ruby và vàng hồng ấm áp."
+    },
+    {
+      "slug": "nocturne",
+      "name": "Nocturne",
+      "description": "Sapphire xanh sâu như bầu trời đêm."
+    },
+    {
+      "slug": "perle",
+      "name": "Perle",
+      "description": "Ngọc trai dịu dàng, thanh lịch mỗi ngày."
+    }
+  ],
+  "products": [
+    {
+      "code": "DEMO-001",
+      "slug": "nhan-kim-cuong-solitaire-aurelia",
+      "name": "Nhẫn kim cương Solitaire Aurelia",
+      "category": "nhan",
+      "price": 38500000,
+      "metal": "vang-trang",
+      "karat": "18K",
+      "weightGram": 3.2,
+      "gemstone": {
+        "type": "Kim cương",
+        "carat": 0.5,
+        "color": "F",
+        "clarity": "VS1",
+        "cut": "Tròn Brilliant"
+      },
+      "targetGroup": "women",
+      "collection": "aurelia",
+      "sizes": [
+        "8",
+        "10",
+        "12",
+        "14",
+        "16"
+      ],
+      "stock": 6,
+      "rating": 4.9,
+      "reviewCount": 48,
+      "sold": 132,
+      "createdAt": "2026-09-20",
+      "description": "Thiết kế solitaire kinh điển với viên kim cương tròn 5 ly giác cắt Excellent, đài 4 chấu thanh mảnh giúp viên đá nổi bật. Phù hợp làm nhẫn đính hôn.",
+      "discountPercent": null
+    },
+    {
+      "code": "DEMO-002",
+      "slug": "nhan-vang-hong-ruby-camellia",
+      "name": "Nhẫn vàng hồng Ruby Camellia",
+      "category": "nhan",
+      "price": 22800000,
+      "metal": "vang-hong",
+      "karat": "14K",
+      "weightGram": 3.8,
+      "gemstone": {
+        "type": "Ruby",
+        "carat": 0.8,
+        "color": "Đỏ máu bồ câu",
+        "clarity": "SI1",
+        "cut": "Oval"
+      },
+      "targetGroup": "women",
+      "collection": "camellia",
+      "sizes": [
+        "8",
+        "10",
+        "12",
+        "14",
+        "16"
+      ],
+      "stock": 4,
+      "rating": 4.7,
+      "reviewCount": 21,
+      "sold": 64,
+      "createdAt": "2026-09-12",
+      "description": "Viên ruby oval đỏ thẫm được nâng đỡ bởi đài hoa trà bằng vàng hồng 14K, mang vẻ đẹp ấm áp và quyến rũ.",
+      "discountPercent": 15
+    },
+    {
+      "code": "DEMO-003",
+      "slug": "nhan-bach-kim-sapphire-nocturne",
+      "name": "Nhẫn bạch kim Sapphire Nocturne",
+      "category": "nhan",
+      "price": 64000000,
+      "metal": "bach-kim",
+      "karat": null,
+      "weightGram": 5.1,
+      "gemstone": {
+        "type": "Sapphire",
+        "carat": 1.2,
+        "color": "Xanh hoàng gia",
+        "clarity": "VS2",
+        "cut": "Cushion"
+      },
+      "targetGroup": "unisex",
+      "collection": "nocturne",
+      "sizes": [
+        "10",
+        "12",
+        "14",
+        "16",
+        "18"
+      ],
+      "stock": 2,
+      "rating": 4.8,
+      "reviewCount": 17,
+      "sold": 23,
+      "createdAt": "2026-08-30",
+      "description": "Sapphire xanh hoàng gia cắt cushion viền kim cương tấm, chế tác bạch kim nguyên khối bền bỉ.",
+      "discountPercent": null
+    },
+    {
+      "code": "DEMO-004",
+      "slug": "day-chuyen-kim-cuong-stella",
+      "name": "Dây chuyền kim cương Stella",
+      "category": "day-chuyen",
+      "price": 18900000,
+      "metal": "vang-trang",
+      "karat": "14K",
+      "weightGram": 2.6,
+      "gemstone": {
+        "type": "Kim cương",
+        "carat": 0.25,
+        "color": "G",
+        "clarity": "VS2",
+        "cut": "Tròn Brilliant"
+      },
+      "targetGroup": "women",
+      "collection": "aurelia",
+      "sizes": [],
+      "stock": 12,
+      "rating": 4.8,
+      "reviewCount": 35,
+      "sold": 210,
+      "createdAt": "2026-09-25",
+      "description": "Mặt dây hình ngôi sao nhỏ nhắn đính kim cương, dây chuyền mảnh dài 45 cm có thể điều chỉnh.",
+      "discountPercent": 10
+    },
+    {
+      "code": "DEMO-005",
+      "slug": "day-chuyen-ngoc-trai-akoya",
+      "name": "Dây chuyền ngọc trai Akoya Lumière",
+      "category": "day-chuyen",
+      "price": 12400000,
+      "metal": "vang",
+      "karat": "18K",
+      "weightGram": 14.5,
+      "gemstone": {
+        "type": "Ngọc trai",
+        "carat": 0,
+        "color": "Trắng ánh hồng",
+        "clarity": "AAA",
+        "cut": "Tròn 7-7.5 mm"
+      },
+      "targetGroup": "women",
+      "collection": "perle",
+      "sizes": [],
+      "stock": 9,
+      "rating": 4.6,
+      "reviewCount": 29,
+      "sold": 87,
+      "createdAt": "2026-07-18",
+      "description": "Chuỗi ngọc trai Akoya tuyển chọn đồng đều, ánh xà cừ mềm, khóa vàng 18K.",
+      "discountPercent": null
+    },
+    {
+      "code": "DEMO-006",
+      "slug": "day-chuyen-vang-24k-phuc-loc",
+      "name": "Dây chuyền vàng 24K Phúc Lộc",
+      "category": "day-chuyen",
+      "price": 27600000,
+      "metal": "vang",
+      "karat": "24K",
+      "weightGram": 5,
+      "gemstone": null,
+      "targetGroup": "unisex",
+      "collection": null,
+      "sizes": [],
+      "stock": 0,
+      "rating": 4.5,
+      "reviewCount": 12,
+      "sold": 156,
+      "createdAt": "2026-06-02",
+      "description": "Dây chuyền vàng ta 24K kiểu dây đan, màu vàng đậm truyền thống, thích hợp làm quà tặng.",
+      "discountPercent": null
+    },
+    {
+      "code": "DEMO-007",
+      "slug": "bong-tai-ngoc-trai-perle",
+      "name": "Bông tai ngọc trai Perle",
+      "category": "bong-tai",
+      "price": 6900000,
+      "metal": "bac",
+      "karat": null,
+      "weightGram": 3,
+      "gemstone": {
+        "type": "Ngọc trai",
+        "carat": 0,
+        "color": "Trắng",
+        "clarity": "AA",
+        "cut": "Tròn 8 mm"
+      },
+      "targetGroup": "women",
+      "collection": "perle",
+      "sizes": [],
+      "stock": 25,
+      "rating": 4.4,
+      "reviewCount": 40,
+      "sold": 320,
+      "createdAt": "2026-09-05",
+      "description": "Bông tai bạc 925 mạ rhodium đính ngọc trai nước ngọt, nhẹ nhàng cho trang phục công sở.",
+      "discountPercent": 20
+    },
+    {
+      "code": "DEMO-008",
+      "slug": "bong-tai-kim-cuong-halo",
+      "name": "Bông tai kim cương Halo",
+      "category": "bong-tai",
+      "price": 45200000,
+      "metal": "vang-trang",
+      "karat": "18K",
+      "weightGram": 4.2,
+      "gemstone": {
+        "type": "Kim cương",
+        "carat": 0.7,
+        "color": "E",
+        "clarity": "VVS2",
+        "cut": "Tròn Brilliant"
+      },
+      "targetGroup": "women",
+      "collection": "aurelia",
+      "sizes": [],
+      "stock": 3,
+      "rating": 5,
+      "reviewCount": 9,
+      "sold": 18,
+      "createdAt": "2026-10-02",
+      "description": "Bông tai halo ôm viên chủ kim cương bằng vòng đá tấm, tỏa sáng ở mọi góc nhìn.",
+      "discountPercent": null
+    },
+    {
+      "code": "DEMO-009",
+      "slug": "bong-tai-ruby-giot-le",
+      "name": "Bông tai Ruby giọt lệ",
+      "category": "bong-tai",
+      "price": 15800000,
+      "metal": "vang-hong",
+      "karat": "10K",
+      "weightGram": 2.4,
+      "gemstone": {
+        "type": "Ruby",
+        "carat": 0.6,
+        "color": "Đỏ hồng",
+        "clarity": "SI2",
+        "cut": "Giọt lê"
+      },
+      "targetGroup": "women",
+      "collection": "camellia",
+      "sizes": [],
+      "stock": 7,
+      "rating": 4.3,
+      "reviewCount": 14,
+      "sold": 41,
+      "createdAt": "2026-08-14",
+      "description": "Ruby cắt giọt lê treo trên móc vàng hồng 10K, dáng bông tai thả duyên dáng.",
+      "discountPercent": 12
+    },
+    {
+      "code": "DEMO-010",
+      "slug": "lac-tay-vang-trang-kim-cuong-eternity",
+      "name": "Lắc tay kim cương Eternity",
+      "category": "lac-vong-tay",
+      "price": 52000000,
+      "metal": "vang-trang",
+      "karat": "18K",
+      "weightGram": 6.8,
+      "gemstone": {
+        "type": "Kim cương",
+        "carat": 1,
+        "color": "G",
+        "clarity": "VS2",
+        "cut": "Tròn Brilliant"
+      },
+      "targetGroup": "women",
+      "collection": "aurelia",
+      "sizes": [
+        "15",
+        "16",
+        "17",
+        "18"
+      ],
+      "stock": 3,
+      "rating": 4.9,
+      "reviewCount": 11,
+      "sold": 27,
+      "createdAt": "2026-09-28",
+      "description": "Lắc tay eternity đính một hàng kim cương tròn liền mạch, ôm cổ tay mềm mại.",
+      "discountPercent": null
+    },
+    {
+      "code": "DEMO-011",
+      "slug": "vong-tay-bac-sapphire-oceane",
+      "name": "Vòng tay bạc Sapphire Océane",
+      "category": "lac-vong-tay",
+      "price": 5600000,
+      "metal": "bac",
+      "karat": null,
+      "weightGram": 9.5,
+      "gemstone": {
+        "type": "Sapphire",
+        "carat": 0.4,
+        "color": "Xanh biển",
+        "clarity": "SI1",
+        "cut": "Tròn"
+      },
+      "targetGroup": "unisex",
+      "collection": "nocturne",
+      "sizes": [
+        "16",
+        "17",
+        "18",
+        "19"
+      ],
+      "stock": 18,
+      "rating": 4.2,
+      "reviewCount": 33,
+      "sold": 275,
+      "createdAt": "2026-05-21",
+      "description": "Vòng tay bạc 925 đính sapphire xanh biển, phong cách trẻ trung, dễ phối đồ.",
+      "discountPercent": 25
+    },
+    {
+      "code": "DEMO-012",
+      "slug": "lac-tay-vang-18k-dang-day",
+      "name": "Lắc tay vàng 18K dáng dây",
+      "category": "lac-vong-tay",
+      "price": 14300000,
+      "metal": "vang",
+      "karat": "18K",
+      "weightGram": 4.5,
+      "gemstone": null,
+      "targetGroup": "women",
+      "collection": null,
+      "sizes": [
+        "15",
+        "16",
+        "17",
+        "18"
+      ],
+      "stock": 10,
+      "rating": 4.6,
+      "reviewCount": 19,
+      "sold": 98,
+      "createdAt": "2026-08-02",
+      "description": "Lắc tay vàng 18K kiểu dây xoắn, bề mặt bóng sáng, khóa an toàn hai lớp.",
+      "discountPercent": null
+    },
+    {
+      "code": "DEMO-013",
+      "slug": "kim-cuong-vien-tu-nhien-1-carat",
+      "name": "Kim cương viên tự nhiên 1 carat",
+      "category": "da-quy",
+      "price": 128000000,
+      "metal": "bach-kim",
+      "karat": null,
+      "weightGram": 0.2,
+      "gemstone": {
+        "type": "Kim cương",
+        "carat": 1,
+        "color": "D",
+        "clarity": "VVS1",
+        "cut": "Tròn Excellent"
+      },
+      "targetGroup": "unisex",
+      "collection": null,
+      "sizes": [],
+      "stock": 1,
+      "rating": 5,
+      "reviewCount": 4,
+      "sold": 6,
+      "createdAt": "2026-10-08",
+      "description": "Kim cương tự nhiên có giấy kiểm định, dành cho chế tác nhẫn đính hôn theo yêu cầu.",
+      "discountPercent": null
+    },
+    {
+      "code": "DEMO-014",
+      "slug": "ruby-vien-myanmar-2-carat",
+      "name": "Ruby viên Myanmar 2 carat",
+      "category": "da-quy",
+      "price": 86500000,
+      "metal": "vang",
+      "karat": null,
+      "weightGram": 0.4,
+      "gemstone": {
+        "type": "Ruby",
+        "carat": 2,
+        "color": "Đỏ máu bồ câu",
+        "clarity": "SI1",
+        "cut": "Oval"
+      },
+      "targetGroup": "unisex",
+      "collection": "camellia",
+      "sizes": [],
+      "stock": 2,
+      "rating": 4.8,
+      "reviewCount": 6,
+      "sold": 9,
+      "createdAt": "2026-09-01",
+      "description": "Ruby tự nhiên xuất xứ Myanmar, màu đỏ đậm, độ trong tốt, sẵn sàng để chế tác.",
+      "discountPercent": 8
+    }
+  ]
+}
