@@ -1,7 +1,5 @@
 "use client";
 
-import { ROUTES } from "@/constants";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Spinner } from "@/components/ui/Spinner";
 import { Alert } from "@/components/ui/Field";
@@ -32,23 +30,6 @@ export function AccountPanel() {
       <section className="rounded-2xl border border-line bg-paper p-5 shadow-card sm:p-6">
         <h2 className="mb-5 font-serif text-2xl">Thông tin cá nhân</h2>
         <ProfileForm profile={profile} onUpdated={setProfile} />
-      </section>
-      <section className="rounded-2xl border border-line bg-paper p-5 shadow-card sm:p-6">
-        <h2 className="mb-4 font-serif text-2xl">Mua sắm của tôi</h2>
-        <nav aria-label="Liên kết tài khoản" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            { label: "Đơn hàng của tôi", note: "Theo dõi và hủy đơn", href: ROUTES.orders },
-            { label: "Đánh giá của tôi", note: "Đánh giá sản phẩm đã mua", href: ROUTES.reviews },
-            { label: "Giỏ hàng", note: "Xem và chỉnh sửa giỏ hàng", href: ROUTES.cart },
-            { label: "Yêu thích", note: "Sản phẩm bạn đã lưu", href: ROUTES.wishlist },
-            { label: "Sổ địa chỉ", note: "Địa chỉ nhận hàng", href: ROUTES.addresses },
-          ].map((l) => (
-            <Link key={l.href} href={l.href} className="rounded-ui border border-line p-4 transition-colors hover:border-gold-deep hover:bg-gold-tint">
-              <span className="block font-medium text-ink">{l.label}</span>
-              <span className="mt-1 block text-xs text-muted">{l.note}</span>
-            </Link>
-          ))}
-        </nav>
       </section>
     </div>
   );

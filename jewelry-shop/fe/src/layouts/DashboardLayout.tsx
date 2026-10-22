@@ -89,26 +89,63 @@ function AdminShell({ title, children }: { title: string; children: ReactNode })
   );
 }
 
-function AccountShell({ title, children }: { title: string; children: ReactNode }) {
+const ACCOUNT_TABS = [
+  { label: "Tài khoản", href: ROUTES.user },
+  { label: "Đơn hàng", href: ROUTES.orders },
+  { label: "Đánh giá", href: ROUTES.reviews },
+  { label: "Sổ địa chỉ", href: ROUTES.addresses },
+];
+
+function AccountShell({ title, children, bare = false }: { title: string; children: ReactNode; bare?: boolean }) {
   const { user } = useAuth();
   const pathname = usePathname();
+  const isActiveTab = (href: string) => (href === ROUTES.user ? pathname === href : pathname === href || pathname.startsWith(`${href}/`));
+  // Trang chỉ hiện tiêu đề và nội dung (ví dụ Bộ sưu tập): không email, nút hay thanh tab.
+  if (bare) {
+    return (
+      <ShopLayout>
+        <div className="mx-auto max-w-7xl px-4 py-8">
+          <h1 className="mb-6 font-serif text-3xl text-ink sm:text-4xl">{title}</h1>
+          {children}
+        </div>
+      </ShopLayout>
+    );
+  }
   return (
     <ShopLayout>
       <div className="mx-auto max-w-5xl px-4 py-6 sm:py-8">
-        <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div>
             <h1 className="font-serif text-2xl text-ink sm:text-3xl">{title}</h1>
             {user?.email && <p className="mt-1 text-sm text-muted">{user.email}</p>}
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            {pathname !== ROUTES.changePassword && (
-              <ButtonLink href={ROUTES.changePassword} variant="secondary">
-                Đổi mật khẩu
-              </ButtonLink>
+            {pathname === ROUTES.user && (
+              <>
+                <ButtonLink href={ROUTES.changePassword} variant="secondary">
+                  Đổi mật khẩu
+                </ButtonLink>
+                <LogoutLink />
+              </>
             )}
-            <LogoutLink />
           </div>
         </div>
+        <nav aria-label="Khu vực tài khoản" className="mb-6 flex gap-1 overflow-x-auto border-b border-line">
+          {ACCOUNT_TABS.map((t) => (
+            <Link
+              key={t.href}
+              href={t.href}
+              aria-current={isActiveTab(t.href) ? "page" : undefined}
+              className={`-mb-px shrink-0 whitespace-nowrap border-b-2 px-4 py-2.5 text-sm transition-colors ${
+                isActiveTab(t.href)
+                  ? "border-gold-deep font-semibold text-gold-deep"
+                  : "border-transparent text-muted hover:text-ink"
+              }`}
+            >
+              {t.label}
+            </Link>
+          ))}
+        </nav>
         {children}
       </div>
     </ShopLayout>
@@ -119,14 +156,17 @@ export function DashboardLayout({
   title,
   children,
   variant = "account",
+  bare = false,
 }: {
   title: string;
   children: ReactNode;
   variant?: "account" | "admin";
+  /** Chỉ cho trang tài khoản: ẩn email, nút và thanh tab, chỉ giữ tiêu đề và nội dung. */
+  bare?: boolean;
 }) {
   return variant === "admin" ? (
     <AdminShell title={title}>{children}</AdminShell>
   ) : (
-    <AccountShell title={title}>{children}</AccountShell>
+    <AccountShell title={title} bare={bare}>{children}</AccountShell>
   );
 }

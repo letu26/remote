@@ -148,7 +148,7 @@ export function OrderDetailView() {
 
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-line bg-paper p-4 shadow-card">
         <div>
-          <h2 className="font-serif text-2xl text-ink">Đơn {order.code}</h2>
+          <h2 className="text-xl font-semibold text-ink">Đơn {order.code}</h2>
           <p className="text-xs text-muted">Đặt lúc {formatDateTime(order.createdAt)}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -168,70 +168,69 @@ export function OrderDetailView() {
 
       {order.paymentInstructions && <BankTransferBox info={order.paymentInstructions} />}
 
-      <div className="grid gap-5 lg:grid-cols-[1fr_20rem]">
-        <div className="space-y-5">
-          <section className="rounded-lg border border-line bg-paper p-4 shadow-card sm:p-5">
-            <h2 className="mb-3 font-serif text-xl">Sản phẩm</h2>
-            <ul className="divide-y divide-line">
-              {order.items.map((it, i) => (
-                <li key={i} className="flex gap-3 py-3 first:pt-0 last:pb-0">
-                  <div className="relative aspect-square w-16 shrink-0 overflow-hidden rounded-ui border border-line">
-                    <ProductImage url={it.imageUrl} alt={it.productName} art={artFor(undefined)} metal={metalFor(undefined)} sizes="4rem" />
-                  </div>
-                  <div className="min-w-0 flex-1 text-sm">
-                    {it.productSlug ? (
-                      <Link href={`/products/${it.productSlug}`} className="line-clamp-2 font-medium hover:text-gold-deep">
-                        {it.productName}
-                      </Link>
-                    ) : (
-                      <p className="line-clamp-2 font-medium">{it.productName}</p>
-                    )}
-                    <p className="text-xs text-muted">
-                      Mã: {it.productCode}
-                      {it.size ? ` · Size: ${it.size}` : ""} · {formatVND(it.unitPrice)} x {it.quantity}
-                    </p>
-                    {order.status === "delivered" && it.productSlug && (
-                      <Link
-                        href={`/products/${it.productSlug}#reviews`}
-                        className="mt-1 inline-block text-xs font-medium text-gold-deep hover:underline"
-                        aria-label={`Đánh giá ${it.productName}`}
-                      >
-                        Đánh giá
-                      </Link>
-                    )}
-                  </div>
-                  <p className="shrink-0 text-sm font-semibold">{formatVND(it.lineTotal)}</p>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          <section className="rounded-lg border border-line bg-paper p-4 shadow-card sm:p-5">
-            <h2 className="mb-3 font-serif text-xl">Địa chỉ nhận hàng</h2>
-            <p className="text-sm font-medium">{order.receiver.name} · {order.receiver.phone}</p>
-            <p className="text-sm text-muted">
-              {order.receiver.addressDetail}, {order.receiver.ward}, {order.receiver.province}
-            </p>
-            {order.note && <p className="mt-2 text-sm text-muted">Ghi chú: {order.note}</p>}
-          </section>
-        </div>
-
-        <div className="space-y-5">
-          <section className="rounded-lg border border-line bg-paper p-4 shadow-card sm:p-5">
-            <h2 className="mb-3 font-serif text-xl">Thanh toán</h2>
-            <dl className="space-y-2 text-sm">
-              <div className="flex justify-between gap-3"><dt className="text-muted">Vận chuyển</dt><dd className="text-right">{order.shippingMethodName}</dd></div>
-              <div className="flex justify-between gap-3"><dt className="text-muted">Thanh toán</dt><dd className="text-right">{PAYMENT_METHOD_LABEL[order.paymentMethod]}</dd></div>
-              <div className="flex justify-between gap-3"><dt className="text-muted">Tạm tính</dt><dd>{formatVND(order.subtotal)}</dd></div>
-              <div className="flex justify-between gap-3"><dt className="text-muted">Phí vận chuyển</dt><dd>{formatVND(order.shippingFee)}</dd></div>
-              <div className="flex justify-between gap-3 border-t border-line pt-2 text-base"><dt className="font-medium">Tổng cộng</dt><dd className="font-semibold">{formatVND(order.total)}</dd></div>
-            </dl>
-          </section>
-          <section className="rounded-lg border border-line bg-paper p-4 shadow-card sm:p-5">
-            <h2 className="mb-3 font-serif text-xl">Tiến trình</h2>
+      {/* Lưới 2x2: hàng trên và hàng dưới mỗi hàng cao bằng nhau; danh sách bên trong tự cuộn khi dài hơn khung. */}
+      <div className="grid gap-5 lg:grid-cols-[1fr_20rem] lg:grid-rows-[16rem_15rem]">
+        <section className="rounded-lg border border-line bg-paper p-4 shadow-card sm:p-5 lg:flex lg:min-h-0 lg:flex-col">
+          <h2 className="mb-3 shrink-0 font-serif text-xl">Sản phẩm</h2>
+          <ul className="divide-y divide-line lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
+            {order.items.map((it, i) => (
+              <li key={i} className="flex gap-3 py-3 first:pt-0 last:pb-0">
+                <div className="relative aspect-square w-16 shrink-0 overflow-hidden rounded-ui border border-line">
+                  <ProductImage url={it.imageUrl} alt={it.productName} art={artFor(undefined)} metal={metalFor(undefined)} sizes="4rem" />
+                </div>
+                <div className="min-w-0 flex-1 text-sm">
+                  {it.productSlug ? (
+                    <Link href={`/products/${it.productSlug}`} className="line-clamp-2 font-medium hover:text-gold-deep">
+                      {it.productName}
+                    </Link>
+                  ) : (
+                    <p className="line-clamp-2 font-medium">{it.productName}</p>
+                  )}
+                  <p className="text-xs text-muted">
+                    Mã: {it.productCode}
+                    {it.size ? ` · Size: ${it.size}` : ""} · {formatVND(it.unitPrice)} x {it.quantity}
+                  </p>
+                  {order.status === "delivered" && it.productSlug && (
+                    <Link
+                      href={`/products/${it.productSlug}#reviews`}
+                      className="mt-1 inline-block text-xs font-medium text-gold-deep hover:underline"
+                      aria-label={`Đánh giá ${it.productName}`}
+                    >
+                      Đánh giá
+                    </Link>
+                  )}
+                </div>
+                <p className="shrink-0 text-sm font-semibold">{formatVND(it.lineTotal)}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section className="rounded-lg border border-line bg-paper p-4 shadow-card sm:p-5 lg:min-h-0">
+          <h2 className="mb-3 font-serif text-xl">Thanh toán</h2>
+          <dl className="space-y-2 text-sm">
+            <div className="flex justify-between gap-3"><dt className="text-muted">Vận chuyển</dt><dd className="text-right">{order.shippingMethodName}</dd></div>
+            <div className="flex justify-between gap-3"><dt className="text-muted">Thanh toán</dt><dd className="text-right">{PAYMENT_METHOD_LABEL[order.paymentMethod]}</dd></div>
+            <div className="flex justify-between gap-3"><dt className="text-muted">Tạm tính</dt><dd>{formatVND(order.subtotal)}</dd></div>
+            <div className="flex justify-between gap-3"><dt className="text-muted">Phí vận chuyển</dt><dd>{formatVND(order.shippingFee)}</dd></div>
+            <div className="flex justify-between gap-3 border-t border-line pt-2 text-base"><dt className="font-medium">Tổng cộng</dt><dd className="font-semibold">{formatVND(order.total)}</dd></div>
+          </dl>
+        </section>
+        <section className="rounded-lg border border-line bg-paper p-4 shadow-card sm:p-5 lg:flex lg:min-h-0 lg:flex-col">
+          <h2 className="mb-3 shrink-0 font-serif text-xl">Tiến trình</h2>
+          <div className="lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
             <Timeline history={order.history} />
-          </section>
-        </div>
+          </div>
+        </section>
+        <section className="rounded-lg border border-line bg-paper p-4 shadow-card sm:p-5 lg:flex lg:min-h-0 lg:flex-col">
+          <h2 className="mb-3 shrink-0 font-serif text-xl">Địa chỉ nhận hàng</h2>
+          <div className="lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
+          <p className="text-sm font-medium">{order.receiver.name} · {order.receiver.phone}</p>
+          <p className="text-sm text-muted">
+            {order.receiver.addressDetail}, {order.receiver.ward}, {order.receiver.province}
+          </p>
+          {order.note && <p className="mt-2 text-sm text-muted">Ghi chú: {order.note}</p>}
+          </div>
+        </section>
       </div>
 
       <Link href={ROUTES.orders} className="inline-block text-sm font-medium text-gold-deep hover:underline">

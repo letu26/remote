@@ -75,6 +75,12 @@ body {
   font-family: var(--font-be-vietnam), system-ui, sans-serif;
 }
 
+/* Font serif (Cormorant) mặc định dùng chữ số kiểu cổ điển (1 trông như I, 0 như o); chuyển sang chữ số thường cho dễ đọc. */
+.font-serif {
+  font-variant-numeric: lining-nums;
+  font-feature-settings: "lnum" 1;
+}
+
 /* Ô chọn (select): bỏ mũi tên gốc dính sát mép, vẽ mũi tên riêng cách phải một đoạn. */
 select:not([multiple]):not([size]) {
   appearance: none;
