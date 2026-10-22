@@ -118,17 +118,17 @@ export function CustomerList() {
       )}
       {failed && <ErrorState onRetry={() => setReloadKey((k) => k + 1)} />}
       {!failed && data && items.length === 0 && (
-        <EmptyState title={filtered ? "Không tìm thấy khách hàng phù hợp" : "Chưa có khách hàng nào"} description={filtered ? "Thử đổi từ khóa hoặc bộ lọc." : "Tài khoản đăng ký sẽ hiện ở đây."} />
+        <EmptyState title={filtered ? "Không tìm thấy người dùng phù hợp" : "Chưa có người dùng nào"} description={filtered ? "Thử đổi từ khóa hoặc bộ lọc." : "Tài khoản đăng ký sẽ hiện ở đây."} />
       )}
 
       {!failed && items.length > 0 && (
         <div className={loading ? "opacity-60 transition-opacity" : "transition-opacity"} aria-busy={loading}>
           <div className="hidden overflow-x-auto rounded-lg border border-line bg-paper shadow-card md:block">
             <table className="w-full text-left text-[13px]">
-              <caption className="sr-only">Danh sách khách hàng</caption>
+              <caption className="sr-only">Danh sách người dùng</caption>
               <thead className="bg-sand text-xs uppercase tracking-wide text-muted">
                 <tr>
-                  <th scope="col" className="px-3 py-2.5 font-semibold">Khách hàng</th>
+                  <th scope="col" className="px-3 py-2.5 font-semibold">Người dùng</th>
                   <th scope="col" className="px-3 py-2.5 font-semibold">Liên hệ</th>
                   <th scope="col" className="px-3 py-2.5 text-right font-semibold">Số đơn</th>
                   <th scope="col" className="px-3 py-2.5 text-right font-semibold">Tổng chi tiêu</th>

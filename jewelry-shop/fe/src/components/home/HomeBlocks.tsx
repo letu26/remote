@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { ProductArt } from "@/components/product/ProductArt";
 import { ProductCard } from "@/components/product/ProductCard";
+import { ProductImage } from "@/components/product/ProductImage";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { ProductCardSkeleton, Skeleton } from "@/components/ui/Skeleton";
 import { useAsyncData } from "@/hooks/useAsyncData";
@@ -72,6 +73,23 @@ export function ProductBlock({
 
 const ART_METAL: MetalSlug[] = ["vang-hong", "vang-trang", "vang", "bach-kim"];
 
+/** Ảnh đại diện danh mục: ảnh sản phẩm nổi bật đầu tiên của danh mục; chưa có thì dùng ảnh minh họa. */
+function CategoryCover({ slug, name, index }: { slug: string; name: string; index: number }) {
+  const { data } = useAsyncData(`cover-${slug}`, (signal) => listProducts({ category: slug, featured: true, pageSize: 1 }, signal));
+  const art = artFor(slug);
+  const metal = ART_METAL[index % ART_METAL.length];
+  return (
+    <ProductImage
+      url={data?.items[0]?.primaryImageUrl}
+      alt={`Danh mục ${name}`}
+      art={art}
+      metal={metal}
+      variant={index}
+      sizes="(min-width: 1024px) 15rem, (min-width: 640px) 33vw, 50vw"
+    />
+  );
+}
+
 export function CategoriesBlock() {
   const { data, loading, failed, reload } = useAsyncData("home-categories", () => getCategories());
   if (data && data.length === 0) return null;
@@ -81,26 +99,26 @@ export function CategoriesBlock() {
       {failed ? (
         <BlockError title="Danh mục nổi bật" onRetry={reload} />
       ) : loading || !data ? (
-        <div role="status" aria-label="Đang tải danh mục" className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {Array.from({ length: 4 }, (_, i) => (
+        <div role="status" aria-label="Đang tải danh mục" className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
+          {Array.from({ length: 5 }, (_, i) => (
             <Skeleton key={i} className="aspect-square" />
           ))}
         </div>
       ) : (
-        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
           {data.map((c, i) => (
             <li key={c.id}>
               <Link
                 href={`/products?category=${c.slug}`}
-                className="group block overflow-hidden rounded-lg border border-line bg-paper shadow-card transition-shadow hover:shadow-pop"
+                className="group block overflow-hidden rounded-2xl border border-line bg-paper shadow-card transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-pop"
               >
                 <div className="aspect-square overflow-hidden">
-                  <div className="h-full transition-transform duration-500 group-hover:scale-105">
-                    <ProductArt art={artFor(c.slug)} metal={ART_METAL[i % ART_METAL.length]} variant={i} label={`Danh mục ${c.name}`} />
+                  <div className="relative h-full transition-transform duration-500 group-hover:scale-105">
+                    <CategoryCover slug={c.slug} name={c.name} index={i} />
                   </div>
                 </div>
-                <div className="p-3 text-center">
-                  <h3 className="font-serif text-xl text-ink group-hover:text-gold-deep">{c.name}</h3>
+                <div className="border-t border-line p-3 text-center">
+                  <h3 className="font-serif text-lg text-ink group-hover:text-gold-deep sm:text-xl">{c.name}</h3>
                 </div>
               </Link>
             </li>
@@ -147,7 +165,7 @@ export function CollectionsBlock() {
       ) : loading || !data ? (
         <div role="status" aria-label="Đang tải bộ sưu tập" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {Array.from({ length: 4 }, (_, i) => (
-            <Skeleton key={i} className="aspect-[4/5]" />
+            <Skeleton key={i} className="aspect-square" />
           ))}
         </div>
       ) : (

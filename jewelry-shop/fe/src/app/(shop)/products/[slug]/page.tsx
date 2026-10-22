@@ -89,31 +89,31 @@ async function ProductDetailContent({ params }: { params: PageProps<"/products/[
       <div className="mt-4 grid gap-6 lg:gap-10 lg:grid-cols-2">
         <ProductGallery product={product} />
 
-        <div className="space-y-6">
+        <div className="space-y-6 lg:sticky lg:top-28 lg:self-start">
           <div>
             <div className="mb-3 flex flex-wrap gap-2">
               {product.discountPercent ? <Badge tone="sale">Giảm {product.discountPercent}%</Badge> : null}
               {!product.inStock && <Badge tone="soldout">Hết hàng</Badge>}
             </div>
-            <h1 className="font-serif text-2xl leading-tight text-ink sm:text-3xl">{product.name}</h1>
+            <h1 className="font-serif text-3xl leading-tight text-ink sm:text-4xl">{product.name}</h1>
             <p className="mt-2 text-sm text-muted">Mã sản phẩm: {product.code}</p>
             <div className="mt-3">
               <LiveRating productId={product.id} avgRating={product.avgRating} reviewCount={product.reviewCount} />
             </div>
           </div>
 
-          <div className="rounded-lg border border-line bg-gold-tint/50 p-4">
+          <div className="rounded-2xl border border-gold/40 bg-gradient-to-br from-gold-tint to-paper p-5">
             <Price price={product.price} salePrice={product.salePrice} discountPercent={product.discountPercent} size="lg" />
           </div>
 
           <ProductBuyBox product={product} />
 
-          <ul className="space-y-2 rounded-lg border border-line bg-paper p-4 text-sm">
+          <ul className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-paper text-sm">
             {POLICIES.map((p) => (
-              <li key={p.key}>
+              <li key={p.key} className="px-4 py-3">
                 <span className="font-medium text-ink">{p.title}:</span>{" "}
                 <span className="text-muted">{p.short}</span>{" "}
-                <Link href={POLICY_PAGE[p.key]} className="text-gold-deep underline">Xem chi tiết</Link>
+                <Link href={POLICY_PAGE[p.key]} className="whitespace-nowrap text-gold-deep underline">Xem chi tiết</Link>
               </li>
             ))}
           </ul>

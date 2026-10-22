@@ -88,13 +88,13 @@ export function CustomerDetail({ customerId }: { customerId: number }) {
     const ok = await confirmAction({
       title: toAdmin ? "Cấp quyền quản trị viên" : "Hạ quyền quản trị viên",
       text: toAdmin
-        ? `${customer.fullName} sẽ có TOÀN QUYỀN quản trị cửa hàng (sản phẩm, đơn hàng, khách hàng, cài đặt). Người này sẽ phải đăng nhập lại để quyền mới có hiệu lực. Chỉ cấp cho người bạn hoàn toàn tin tưởng.`
-        : `${customer.fullName} sẽ MẤT toàn bộ quyền quản trị và chỉ còn là khách hàng. Người này sẽ phải đăng nhập lại.`,
+        ? `${customer.fullName} sẽ có TOÀN QUYỀN quản trị cửa hàng (sản phẩm, đơn hàng, người dùng, cài đặt). Người này sẽ phải đăng nhập lại để quyền mới có hiệu lực. Chỉ cấp cho người bạn hoàn toàn tin tưởng.`
+        : `${customer.fullName} sẽ MẤT toàn bộ quyền quản trị và chỉ còn là người dùng. Người này sẽ phải đăng nhập lại.`,
       confirmText: toAdmin ? "Cấp quyền quản trị" : "Hạ quyền",
       tone: "danger",
     });
     if (!ok) return;
-    await run(() => adminCustomerService.setRole(customer.id, actions.nextRole), toAdmin ? "Đã cấp quyền quản trị" : "Đã hạ quyền xuống khách hàng");
+    await run(() => adminCustomerService.setRole(customer.id, actions.nextRole), toAdmin ? "Đã cấp quyền quản trị" : "Đã hạ quyền xuống người dùng");
   };
 
   const run = async (action: () => Promise<Partial<AdminCustomerDetail>>, success: string) => {
@@ -126,7 +126,7 @@ export function CustomerDetail({ customerId }: { customerId: number }) {
           {actions.canLock && <Button variant="ghost" className="text-danger! hover:bg-danger/10!" disabled={busy} onClick={lock}>Khóa tài khoản</Button>}
           {actions.canUnlock && <Button variant="secondary" disabled={busy} onClick={unlock}>Mở khóa tài khoản</Button>}
           <Button variant="secondary" disabled={busy || !actions.canChangeRole} onClick={changeRole}>
-            {actions.nextRole === "admin" ? "Cấp quyền quản trị" : "Hạ quyền xuống khách hàng"}
+            {actions.nextRole === "admin" ? "Cấp quyền quản trị" : "Hạ quyền xuống người dùng"}
           </Button>
           {(actions.lockHint || actions.roleHint) && (
             <p className="text-xs text-muted" data-testid="action-hint">{[actions.lockHint, actions.roleHint].filter(Boolean).join(" · ")}</p>

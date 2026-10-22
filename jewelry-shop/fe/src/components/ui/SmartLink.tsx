@@ -8,11 +8,14 @@ export function SmartLink({
   className,
   children,
   onClick,
+  current,
 }: {
   href: string;
   className?: string;
   children: ReactNode;
   onClick?: () => void;
+  /** Trang đang mở: gắn aria-current="page". */
+  current?: boolean;
 }) {
   if (isExternalLink(href)) {
     return (
@@ -22,7 +25,7 @@ export function SmartLink({
     );
   }
   return (
-    <Link href={href} className={className} onClick={onClick}>
+    <Link href={href} className={className} onClick={onClick} aria-current={current ? "page" : undefined}>
       {children}
     </Link>
   );

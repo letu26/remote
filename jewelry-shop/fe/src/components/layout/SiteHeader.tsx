@@ -12,6 +12,7 @@ import { getCategories } from "@/services/product.service";
 import { ROLE_HOME, ROUTES } from "@/constants";
 import { useAuth } from "@/store/auth-context";
 import { useCartCount } from "@/store/cart-store";
+import { useGivenName } from "@/store/profile-store";
 import { BrandLogo } from "./BrandLogo";
 import { HeaderSearch } from "./HeaderSearch";
 
@@ -27,7 +28,9 @@ function AccountLink({ onNavigate }: { onNavigate?: () => void }) {
   const { status, role } = useAuth();
   const authed = status === "authenticated" && role;
   const href = authed ? ROLE_HOME[role] : ROUTES.login;
-  const label = authed ? (role === "admin" ? "Quản trị" : "Tài khoản") : "Đăng nhập";
+  const name = useGivenName();
+  const fallback = role === "admin" ? "Quản trị" : "Tài khoản";
+  const label = authed ? (name ? `Chào ${name}` : fallback) : "Đăng nhập";
   return (
     <Link
       href={href}
@@ -35,7 +38,7 @@ function AccountLink({ onNavigate }: { onNavigate?: () => void }) {
       className="flex items-center gap-1.5 rounded-ui px-2 py-1.5 text-sm text-ink hover:bg-sand hover:text-gold-deep"
     >
       <UserIcon />
-      <span className="hidden sm:inline">{status === "loading" ? "Tài khoản" : label}</span>
+      <span className="hidden max-w-32 truncate sm:inline">{status === "loading" ? "Tài khoản" : label}</span>
     </Link>
   );
 }

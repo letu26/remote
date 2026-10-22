@@ -103,7 +103,7 @@ function Kpi({ label, value, href, sub }: { label: string; value: string; href?:
   const body = (
     <>
       <p className="text-xs font-medium uppercase tracking-wide text-muted">{label}</p>
-      <p className="mt-1 font-serif text-2xl text-ink">{value}</p>
+      <p className="mt-1 text-2xl font-semibold tabular-nums text-ink">{value}</p>
       {sub && <p className="text-xs text-muted">{sub}</p>}
     </>
   );
@@ -200,7 +200,7 @@ function DashboardBody({ today, params, onNavigate }: { today: string; params: U
             <Kpi label="Doanh thu trong kỳ" value={formatVND(o.inRange.revenue)} />
             <Kpi label="Số đơn trong kỳ" value={String(o.inRange.orders)} />
             <Kpi label="Giá trị đơn trung bình" value={formatVND(o.inRange.averageOrderValue)} />
-            <Kpi label="Khách hàng / Sản phẩm" value={`${o.totalCustomers} / ${o.totalProducts}`} href="/admin/customers" />
+            <Kpi label="Người dùng / Sản phẩm" value={`${o.totalCustomers} / ${o.totalProducts}`} href="/admin/customers" />
           </div>
         )}
       </Block>
@@ -272,7 +272,7 @@ function DashboardBody({ today, params, onNavigate }: { today: string; params: U
             <table className="w-full text-left text-[13px]">
               <caption className="sr-only">Khách mua nhiều</caption>
               <thead className="text-xs uppercase text-muted">
-                <tr><th scope="col" className="py-1 font-semibold">Khách hàng</th><th scope="col" className="py-1 text-right font-semibold">Đơn</th><th scope="col" className="py-1 text-right font-semibold">Tổng chi</th></tr>
+                <tr><th scope="col" className="py-1 font-semibold">Người dùng</th><th scope="col" className="py-1 text-right font-semibold">Đơn</th><th scope="col" className="py-1 text-right font-semibold">Tổng chi</th></tr>
               </thead>
               <tbody className="divide-y divide-line">
                 {items.map((c) => (

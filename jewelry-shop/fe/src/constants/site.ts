@@ -8,7 +8,7 @@ export const NAV_LEAD = [
 ] as const;
 
 export const NAV_TAIL = [
-  { label: "Bộ sưu tập", href: "/#bo-suu-tap" },
+  { label: "Bộ sưu tập", href: "/user/wishlist" },
   { label: "Khuyến mại", href: "/products?sale=1" },
 ] as const;
 
@@ -50,7 +50,7 @@ export const FOOTER_LINKS = {
     { label: "Sản phẩm mới", href: "/products?sort=newest" },
     { label: "Bán chạy nhất", href: "/products?sort=bestseller" },
     { label: "Khuyến mại", href: "/products?sale=1" },
-    { label: "Bộ sưu tập", href: "/#bo-suu-tap" },
+    { label: "Bộ sưu tập", href: "/user/wishlist" },
   ],
   support: [
     { label: "Chính sách bảo hành", href: "/pages/chinh-sach-bao-hanh" },

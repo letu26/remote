@@ -1,6 +1,5 @@
 "use client";
 
-import { ButtonLink } from "@/components/ui/Button";
 import { ROUTES } from "@/constants";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -29,17 +28,12 @@ export function AccountPanel() {
   if (!profile) return <Spinner label="Đang tải thông tin..." />;
 
   return (
-    <div className="grid gap-6 lg:grid-cols-2">
-      <section className="rounded-lg border border-line bg-paper p-4 shadow-card sm:p-5">
+    <div className="space-y-6">
+      <section className="rounded-2xl border border-line bg-paper p-5 shadow-card sm:p-6">
         <h2 className="mb-5 font-serif text-2xl">Thông tin cá nhân</h2>
         <ProfileForm profile={profile} onUpdated={setProfile} />
       </section>
-      <section className="rounded-lg border border-line bg-paper p-4 shadow-card sm:p-5">
-        <h2 className="mb-3 font-serif text-2xl">Mật khẩu</h2>
-        <p className="mb-5 text-sm text-muted">Nên đổi mật khẩu định kỳ để bảo vệ tài khoản.</p>
-        <ButtonLink href={ROUTES.changePassword} variant="secondary">Đổi mật khẩu</ButtonLink>
-      </section>
-      <section className="rounded-lg border border-line bg-paper p-4 shadow-card sm:p-5 lg:col-span-2">
+      <section className="rounded-2xl border border-line bg-paper p-5 shadow-card sm:p-6">
         <h2 className="mb-4 font-serif text-2xl">Mua sắm của tôi</h2>
         <nav aria-label="Liên kết tài khoản" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {[

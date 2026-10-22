@@ -100,7 +100,7 @@ export function InvoiceSheet({ order, site }: { order: AdminOrderDetail; site?: 
 
       <section className="grid gap-4 py-4 sm:grid-cols-2 print:grid-cols-2">
         <div>
-          <h2 className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted">Khách hàng</h2>
+          <h2 className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted">Người dùng</h2>
           <p className="font-medium">{order.customer.fullName}</p>
           <p>{order.customer.phone}</p>
           {order.customer.email && <p>{order.customer.email}</p>}

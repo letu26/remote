@@ -58,7 +58,9 @@ export function ProductListing() {
       ? "Sản phẩm khuyến mại"
       : query.category
         ? (findCategory(options.categories, query.category)?.name ?? "Trang sức")
-        : "Tất cả trang sức";
+        : query.collection
+          ? `Bộ sưu tập ${options.collections.find((c) => c.slug === query.collection)?.name ?? ""}`.trim()
+          : "Tất cả trang sức";
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">

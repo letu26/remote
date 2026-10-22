@@ -18,14 +18,18 @@ export function SectionHeading({
   linkLabel?: string;
 }) {
   return (
-    <div className="mb-5 flex items-end justify-between gap-4">
+    <div className="mb-6 flex items-end justify-between gap-4">
       <div>
-        {kicker && <p className="mb-1 text-xs uppercase tracking-[0.3em] text-gold-deep">{kicker}</p>}
-        <h2 className="font-serif text-2xl text-ink sm:text-3xl">{title}</h2>
-        <div className="mt-3 h-px w-16 bg-gold" />
+        {kicker && <p className="mb-1 text-xs font-medium uppercase tracking-[0.3em] text-gold-deep">{kicker}</p>}
+        <h2 className="font-serif text-3xl text-ink sm:text-4xl">{title}</h2>
+        <div className="mt-3 flex items-center gap-1.5" aria-hidden>
+          <span className="h-0.5 w-10 rounded-full bg-gold-deep" />
+          <span className="h-0.5 w-3 rounded-full bg-gold/60" />
+          <span className="h-0.5 w-1 rounded-full bg-gold/40" />
+        </div>
       </div>
       {href && (
-        <Link href={href} className="shrink-0 text-sm font-medium text-gold-deep hover:underline">
+        <Link href={href} className="shrink-0 rounded-full border border-line-strong px-4 py-1.5 text-sm font-medium text-gold-deep transition-colors hover:border-gold-deep hover:bg-gold-tint">
           {linkLabel} &rarr;
         </Link>
       )}
@@ -43,7 +47,7 @@ export function Section({
   tinted?: boolean;
 }) {
   return (
-    <section id={id} className={`scroll-mt-32 py-8 sm:py-10 ${tinted ? "bg-sand/60" : ""}`}>
+    <section id={id} className={`scroll-mt-32 py-10 sm:py-14 ${tinted ? "bg-sand/60" : ""}`}>
       <div className="mx-auto max-w-7xl px-4">{children}</div>
     </section>
   );
@@ -51,11 +55,11 @@ export function Section({
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden border-b border-line bg-[radial-gradient(ellipse_at_top_right,#f6ecd0_0%,#fbf8f1_60%)]">
-      <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-8 sm:py-12 lg:grid-cols-2">
+    <section className="relative overflow-hidden border-b border-line bg-[radial-gradient(ellipse_at_top_right,#f7edd2_0%,#fbf8f1_55%,#eaf6f2_100%)]">
+      <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-10 sm:py-16 lg:grid-cols-2">
         <div className="text-center lg:text-left">
           <p className="mb-4 text-xs uppercase tracking-[0.4em] text-gold-deep">{BRAND_TAGLINE}</p>
-          <h1 className="font-serif text-3xl leading-tight text-ink sm:text-5xl">
+          <h1 className="font-serif text-4xl leading-[1.1] text-ink sm:text-6xl">
             Vẻ đẹp tinh khôi, <span className="text-gold-deep">lấp lánh</span> cùng {BRAND_NAME}
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted lg:mx-0 sm:text-lg">
@@ -70,10 +74,10 @@ export function Hero() {
           </div>
         </div>
         <div className="mx-auto grid w-full max-w-md grid-cols-2 gap-4">
-          <div className="aspect-[4/5] overflow-hidden rounded-lg border border-line shadow-card">
+          <div className="aspect-[4/5] -rotate-2 overflow-hidden rounded-2xl border border-white/70 shadow-pop">
             <ProductArt art={{ kind: "ring", gem: "kim-cuong" }} metal="vang-trang" label="Nhẫn kim cương minh họa" />
           </div>
-          <div className="mt-8 aspect-[4/5] overflow-hidden rounded-lg border border-line shadow-card">
+          <div className="mt-10 aspect-[4/5] rotate-2 overflow-hidden rounded-2xl border border-white/70 shadow-pop">
             <ProductArt art={{ kind: "necklace", gem: "ngoc-trai" }} metal="vang" variant={1} label="Dây chuyền ngọc trai minh họa" />
           </div>
         </div>

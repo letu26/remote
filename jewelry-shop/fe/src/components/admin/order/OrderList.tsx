@@ -127,7 +127,7 @@ export function OrderList() {
       {filters.userId && (
         <div className="flex flex-wrap items-center gap-2 rounded-ui bg-gold-tint px-3 py-2 text-sm text-gold-deeper" data-testid="customer-filter">
           <span>Đơn của {customerName ?? `khách #${filters.userId}`}</span>
-          <Button size="sm" variant="ghost" onClick={() => apply({ userId: "" })}>Bỏ lọc khách hàng</Button>
+          <Button size="sm" variant="ghost" onClick={() => apply({ userId: "" })}>Bỏ lọc người dùng</Button>
         </div>
       )}
       {filtered && (

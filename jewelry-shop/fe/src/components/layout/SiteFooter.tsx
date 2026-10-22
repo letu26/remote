@@ -24,8 +24,8 @@ export function SiteFooter() {
   const socials = socialLinks(info);
 
   return (
-    <footer className="mt-12 border-t border-line bg-sand">
-      <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:grid-cols-2 lg:grid-cols-4">
+    <footer className="mt-16 border-t border-line bg-gradient-to-b from-sand to-gold-tint/60">
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1.6fr]">
         <div className="space-y-4">
           <BrandLogo />
           <p className="max-w-xs text-sm leading-relaxed text-muted">{info.slogan}</p>
@@ -65,7 +65,7 @@ export function SiteFooter() {
             <li>Giờ mở cửa: {info.openingHours}</li>
           </ul>
         </Column>
-        <div className="sm:col-span-2">
+        <div>
           <Column title="Liên kết">
             <ul className="grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
               {menu.map((l) => (

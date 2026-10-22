@@ -31,7 +31,7 @@ export function AddToCartButton({
       onClick={() => quickAdd({ slug, name, variantCount, singleVariantId })}
     >
       <CartIcon width={16} height={16} />
-      {compact ? "Thêm giỏ" : "Thêm vào giỏ hàng"}
+      {compact ? <span className="sr-only">Thêm giỏ</span> : "Thêm vào giỏ hàng"}
     </Button>
   );
 }

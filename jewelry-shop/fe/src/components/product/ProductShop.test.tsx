@@ -91,7 +91,7 @@ describe("ProductCard - giá", () => {
     const { container } = render(<ProductCard product={summary()} />);
     expect(container.querySelector("del")).toBeNull();
     expect(screen.getByText(/10\.000\.000/)).toBeInTheDocument();
-    expect(screen.getByText("Chưa có đánh giá")).toBeInTheDocument();
+    expect(screen.queryByText("Chưa có đánh giá")).toBeNull();
   });
 });
 

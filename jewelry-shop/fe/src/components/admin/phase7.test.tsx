@@ -317,7 +317,7 @@ describe("khuyến mại", () => {
   });
 });
 
-describe("khách hàng", () => {
+describe("người dùng", () => {
   const cust = (over = {}) => ({
     id: 7, fullName: "Nguyễn Văn A", phone: "0901234567", email: "a@b.co", role: "user", status: "active", createdAt: "2026-01-01T00:00:00Z",
     orderCount: 3, totalSpent: 9000000, lastOrderAt: null, addressCount: 1, reviewCount: 2, wishlistCount: 4,
@@ -380,7 +380,7 @@ describe("khách hàng", () => {
     mock(m.confirm).mockResolvedValueOnce(true);
     fireEvent.click(screen.getByRole("button", { name: "Cấp quyền quản trị" }));
     await waitFor(() => expect(m.customer.setRole).toHaveBeenCalledWith(7, "admin"));
-    expect(await screen.findByRole("button", { name: "Hạ quyền xuống khách hàng" })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: "Hạ quyền xuống người dùng" })).toBeInTheDocument();
   });
 
   it("chính mình: không có nút khóa, nút đổi quyền bị vô hiệu hóa; admin khác: không có nút khóa", async () => {
@@ -389,14 +389,14 @@ describe("khách hàng", () => {
     render(<CustomerDetail customerId={7} />);
     await screen.findByText("Nguyễn Văn A");
     expect(screen.queryByRole("button", { name: "Khóa tài khoản" })).toBeNull();
-    expect(screen.getByRole("button", { name: "Hạ quyền xuống khách hàng" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Hạ quyền xuống người dùng" })).toBeDisabled();
     expect(screen.getByTestId("action-hint")).toHaveTextContent("Không thể tự");
     cleanup();
     m.selfId.value = 1;
     render(<CustomerDetail customerId={7} />);
     await screen.findByText("Nguyễn Văn A");
     expect(screen.queryByRole("button", { name: "Khóa tài khoản" })).toBeNull();
-    expect(screen.getByRole("button", { name: "Hạ quyền xuống khách hàng" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "Hạ quyền xuống người dùng" })).toBeEnabled();
   });
 
   it.each([
@@ -409,7 +409,7 @@ describe("khách hàng", () => {
     render(<CustomerDetail customerId={7} />);
     await screen.findByText("Nguyễn Văn A");
     mock(m.confirm).mockResolvedValueOnce(true);
-    fireEvent.click(screen.getByRole("button", { name: "Hạ quyền xuống khách hàng" }));
+    fireEvent.click(screen.getByRole("button", { name: "Hạ quyền xuống người dùng" }));
     await waitFor(() => expect(m.notify).toHaveBeenCalledWith("error", expect.stringMatching(text)));
   });
 
@@ -437,7 +437,7 @@ describe("lọc đơn theo khách (userId)", () => {
     await waitFor(() => expect(m.order.list).toHaveBeenCalled());
     expect(m.order.list.mock.calls[0][0]).toMatchObject({ userId: 7 });
     expect(await screen.findByText("Đơn của Nguyễn Văn A")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Bỏ lọc khách hàng" }));
+    fireEvent.click(screen.getByRole("button", { name: "Bỏ lọc người dùng" }));
     expect(m.replace).toHaveBeenCalledWith("/admin/x", { scroll: false });
   });
 });

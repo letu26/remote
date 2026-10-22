@@ -123,7 +123,7 @@ export function ProductList() {
   const filtered = q !== "" || categoryId !== "" || active !== "";
 
   const actions = (p: AdminProductListItem) => (
-    <div className="flex flex-wrap justify-end gap-1.5">
+    <div className="flex flex-wrap justify-end gap-1.5 md:flex-nowrap">
       <ButtonLink href={`/admin/products/${p.id}`} size="sm" variant="secondary" aria-label={`Sửa ${p.name}`}>Sửa</ButtonLink>
       <Button size="sm" variant="ghost" loading={busyId === p.id} onClick={() => toggleActive(p)} aria-label={`${p.isActive ? "Ẩn" : "Hiện"} ${p.name}`}>
         {p.isActive ? "Ẩn" : "Hiện"}
@@ -203,7 +203,7 @@ export function ProductList() {
                       <Link href={`/admin/products/${p.id}`} className="font-medium text-ink hover:text-gold-deep hover:underline">{p.name}</Link>
                       <div className="text-xs text-muted">{p.categoryName}</div>
                     </td>
-                    <td className="px-3 py-2 text-right">{formatVND(p.price)}</td>
+                    <td className="whitespace-nowrap px-3 py-2 text-right">{formatVND(p.price)}</td>
                     <td className={`px-3 py-2 text-right ${p.totalStock === 0 ? "font-semibold text-danger" : ""}`}>{p.totalStock}</td>
                     <td className="px-3 py-2">
                       <div className="flex flex-wrap gap-1">

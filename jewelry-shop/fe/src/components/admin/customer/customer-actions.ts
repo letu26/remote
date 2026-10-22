@@ -36,5 +36,5 @@ export function customerActions(
   };
 }
 
-export const ROLE_LABEL: Record<CustomerRole, string> = { user: "Khách hàng", admin: "Quản trị viên" };
+export const ROLE_LABEL: Record<CustomerRole, string> = { user: "Người dùng", admin: "Quản trị viên" };
 export const STATUS_LABEL: Record<CustomerStatus, string> = { active: "Đang hoạt động", locked: "Đã khóa" };

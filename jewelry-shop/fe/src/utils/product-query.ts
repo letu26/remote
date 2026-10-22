@@ -23,7 +23,8 @@ export function parseProductQuery(params: Params): ProductQuery {
     gemstone: gemstone.length ? gemstone : undefined,
     targetGroup: TARGET_GROUPS.find((t) => t.value === params.get("targetGroup"))?.value,
     price: PRICE_RANGES.find((r) => r.key === params.get("price"))?.key,
-    sale: params.get("sale") === "1" || undefined,
+    // `onSale=true` là dạng liên kết của menu CMS; `sale=1` là dạng trang này tự ghi lên URL.
+    sale: params.get("sale") === "1" || params.get("onSale") === "true" || undefined,
     inStock: params.get("instock") === "1" || undefined,
     sort: SORT_OPTIONS.find((s) => s.value === params.get("sort"))?.value,
     page: page && page > 1 ? page : undefined,

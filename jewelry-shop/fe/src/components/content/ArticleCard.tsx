@@ -6,8 +6,8 @@ import { formatDate } from "@/utils/format";
 export function ArticleCard({ article }: { article: ArticleItem }) {
   const href = `/articles/${article.slug}`;
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-lg border border-line bg-paper shadow-card transition-shadow hover:shadow-pop">
-      <Link href={href} tabIndex={-1} aria-hidden className="block aspect-[16/10] overflow-hidden bg-sand">
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-paper shadow-card transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-pop">
+      <Link href={href} tabIndex={-1} aria-hidden className="block aspect-[16/10] overflow-hidden bg-gradient-to-br from-gold-tint to-sand">
         {article.thumbnailUrl ? (
           // eslint-disable-next-line @next/next/no-img-element -- ảnh do admin tải lên
           <img src={article.thumbnailUrl} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]" />

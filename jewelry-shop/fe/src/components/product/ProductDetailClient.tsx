@@ -31,7 +31,7 @@ export function ProductGallery({ product }: { product: ProductDetail }) {
   const current = images[active] ?? images[0];
   return (
     <div className="space-y-3">
-      <div className="relative aspect-square overflow-hidden rounded-lg border border-line shadow-card">
+      <div className="relative aspect-square overflow-hidden rounded-2xl border border-line shadow-card">
         <ProductImage
           key={current?.id ?? "art"}
           url={current?.url}

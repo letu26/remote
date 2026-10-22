@@ -9,25 +9,25 @@ import { ROUTES } from "@/constants";
 import { ShopLayout } from "@/layouts/ShopLayout";
 import { useAuth } from "@/store/auth-context";
 
-// Mục có `href` là trang đã làm; mục không có `href` là giai đoạn sau, hiển thị mờ.
-const ADMIN_MENU: { label: string; href?: string }[] = [
+// Mục có `href` là trang đã làm; nhóm chỉ để chia menu cho dễ tìm (hiện tiêu đề nhóm ở màn hình rộng).
+const ADMIN_MENU: { label: string; href: string; group?: string }[] = [
   { label: "Tổng quan", href: "/admin" },
-  { label: "Sản phẩm", href: "/admin/products" },
+  { label: "Đơn hàng", href: "/admin/orders", group: "Bán hàng" },
+  { label: "Người dùng", href: "/admin/customers" },
+  { label: "Khuyến mại", href: "/admin/promotions" },
+  { label: "Vận chuyển", href: "/admin/shipping-methods" },
+  { label: "Đánh giá", href: "/admin/reviews" },
+  { label: "Sản phẩm", href: "/admin/products", group: "Kho hàng" },
   { label: "Danh mục", href: "/admin/categories" },
   { label: "Chất liệu", href: "/admin/materials" },
   { label: "Loại đá", href: "/admin/gemstones" },
   { label: "Bộ sưu tập", href: "/admin/collections" },
-  { label: "Đơn hàng", href: "/admin/orders" },
-  { label: "Đánh giá", href: "/admin/reviews" },
-  { label: "Bài viết", href: "/admin/articles" },
+  { label: "Bài viết", href: "/admin/articles", group: "Nội dung" },
   { label: "Trang nội dung", href: "/admin/pages" },
   { label: "Hỏi đáp", href: "/admin/faqs" },
   { label: "Banner", href: "/admin/banners" },
   { label: "Menu", href: "/admin/menus" },
-  { label: "Vận chuyển", href: "/admin/shipping-methods" },
-  { label: "Cài đặt", href: "/admin/settings" },
-  { label: "Khách hàng", href: "/admin/customers" },
-  { label: "Khuyến mại", href: "/admin/promotions" },
+  { label: "Cài đặt", href: "/admin/settings", group: "Hệ thống" },
 ];
 
 function LogoutLink({ size }: { size?: "sm" | "md" }) {
@@ -44,9 +44,9 @@ function AdminShell({ title, children }: { title: string; children: ReactNode })
   const isActive = (href: string) => (href === "/admin" ? pathname === href : pathname === href || pathname.startsWith(`${href}/`));
   return (
     <div className="min-h-screen bg-page lg:flex">
-      <aside className="border-b border-line bg-paper lg:min-h-screen lg:w-52 lg:shrink-0 lg:border-b-0 lg:border-r">
+      <aside className="border-b border-line bg-paper lg:sticky lg:top-0 lg:h-screen lg:w-56 lg:shrink-0 lg:overflow-y-auto lg:border-b-0 lg:border-r">
         <div className="flex items-center justify-between px-3 py-2.5 lg:block lg:py-4">
-          <BrandLogo />
+          <BrandLogo className="[&>span]:text-lg [&>span]:tracking-[0.1em]" />
           <span className="rounded-full bg-gold-tint px-2 py-0.5 text-[11px] font-semibold text-gold-deeper lg:mt-2 lg:inline-block">
             Quản trị
           </span>
@@ -55,22 +55,20 @@ function AdminShell({ title, children }: { title: string; children: ReactNode })
           <ul className="flex gap-1 lg:flex-col">
             {ADMIN_MENU.map((m) => (
               <li key={m.label} className="shrink-0">
-                {m.href ? (
-                  <Link
-                    href={m.href}
-                    aria-current={isActive(m.href) ? "page" : undefined}
-                    className={`block whitespace-nowrap rounded-ui px-2.5 py-1.5 text-[13px] transition-colors ${
-                      isActive(m.href) ? "bg-gold-tint font-semibold text-gold-deeper" : "text-ink hover:bg-sand"
-                    }`}
-                  >
-                    {m.label}
-                  </Link>
-                ) : (
-                  <span className="flex items-center justify-between gap-2 whitespace-nowrap rounded-ui px-2.5 py-1.5 text-[13px] text-muted/80" aria-disabled="true">
-                    {m.label}
-                    <span className="hidden text-[10px] uppercase tracking-wide lg:inline">Sắp có</span>
-                  </span>
+                {m.group && (
+                  <p className="mb-1 mt-4 hidden px-2.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted lg:block">
+                    {m.group}
+                  </p>
                 )}
+                <Link
+                  href={m.href}
+                  aria-current={isActive(m.href) ? "page" : undefined}
+                  className={`block whitespace-nowrap rounded-ui px-2.5 py-1.5 text-[13px] transition-colors ${
+                    isActive(m.href) ? "bg-gold-tint font-semibold text-gold-deeper" : "text-ink hover:bg-sand"
+                  }`}
+                >
+                  {m.label}
+                </Link>
               </li>
             ))}
           </ul>
@@ -93,6 +91,7 @@ function AdminShell({ title, children }: { title: string; children: ReactNode })
 
 function AccountShell({ title, children }: { title: string; children: ReactNode }) {
   const { user } = useAuth();
+  const pathname = usePathname();
   return (
     <ShopLayout>
       <div className="mx-auto max-w-5xl px-4 py-6 sm:py-8">
@@ -101,7 +100,14 @@ function AccountShell({ title, children }: { title: string; children: ReactNode 
             <h1 className="font-serif text-2xl text-ink sm:text-3xl">{title}</h1>
             {user?.email && <p className="mt-1 text-sm text-muted">{user.email}</p>}
           </div>
-          <LogoutLink />
+          <div className="flex flex-wrap items-center gap-2">
+            {pathname !== ROUTES.changePassword && (
+              <ButtonLink href={ROUTES.changePassword} variant="secondary">
+                Đổi mật khẩu
+              </ButtonLink>
+            )}
+            <LogoutLink />
+          </div>
         </div>
         {children}
       </div>

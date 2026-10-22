@@ -4,12 +4,20 @@ import { Checkbox } from "@/components/ui/Checkbox";
 import { PRICE_RANGES, TARGET_GROUPS } from "@/constants/catalog";
 import type { CategoryNode, FilterOptions, ProductQuery } from "@/types/catalog";
 
-function Group({ title, children }: { title: string; children: React.ReactNode }) {
+function Group({ title, children, open = false }: { title: string; children: React.ReactNode; open?: boolean }) {
   return (
-    <fieldset className="border-b border-line py-5 first:pt-0 last:border-0">
-      <legend className="mb-3 font-serif text-lg text-ink">{title}</legend>
-      <div className="space-y-2.5">{children}</div>
-    </fieldset>
+    <details open={open} className="group border-b border-line py-3.5 first:pt-0 last:border-0">
+      <summary className="flex cursor-pointer list-none items-center justify-between font-serif text-lg text-ink [&::-webkit-details-marker]:hidden">
+        {title}
+        <span aria-hidden className="text-muted transition-transform duration-200 group-open:rotate-180">
+          ▾
+        </span>
+      </summary>
+      <fieldset className="mt-3">
+        <legend className="sr-only">{title}</legend>
+        <div className="space-y-2.5">{children}</div>
+      </fieldset>
+    </details>
   );
 }
 
@@ -39,7 +47,7 @@ export function ProductFilters({
   return (
     <div>
       {options.categories.length > 0 && (
-        <Group title="Loại trang sức">
+        <Group title="Loại trang sức" open>
           {flatten(options.categories).map(({ node, depth }) => (
             <div key={node.id} style={{ paddingLeft: depth * 16 }}>
               <Checkbox
@@ -52,7 +60,7 @@ export function ProductFilters({
           ))}
         </Group>
       )}
-      <Group title="Khoảng giá">
+      <Group title="Khoảng giá" open>
         {PRICE_RANGES.map((r) => (
           <Checkbox
             key={r.key}
@@ -113,7 +121,7 @@ export function ProductFilters({
           ))}
         </Group>
       )}
-      <Group title="Tình trạng">
+      <Group title="Tình trạng" open>
         <Checkbox
           id={id("sale")}
           label="Đang khuyến mại"

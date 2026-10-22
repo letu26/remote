@@ -46,7 +46,7 @@ export function FaqView() {
   }
   if (!data || data.length === 0) return <EmptyState title="Chưa có câu hỏi nào" />;
   return (
-    <ul className="overflow-hidden rounded-lg border border-line bg-paper shadow-card">
+    <ul className="overflow-hidden rounded-2xl border border-line bg-paper shadow-card">
       {data.map((f) => <FaqItem key={f.id} faq={f} />)}
     </ul>
   );

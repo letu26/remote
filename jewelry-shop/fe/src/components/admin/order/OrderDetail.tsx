@@ -161,7 +161,7 @@ export function OrderDetail({ orderId }: { orderId: number }) {
       </section>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Card title="Khách hàng">
+        <Card title="Người dùng">
           <dl>
             <Row label="Họ tên">{order.customer.fullName}</Row>
             <Row label="Số điện thoại">{order.customer.phone}</Row>

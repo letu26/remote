@@ -39,7 +39,7 @@ export function ProductImage({
       sizes={sizes}
       loading={priority ? "eager" : "lazy"}
       priority={priority}
-      className="img-fade object-cover"
+      className="img-fade bg-white object-contain"
       onError={() => setFailedUrl(url)}
     />
   );
