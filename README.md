@@ -224,7 +224,7 @@ sequenceDiagram
     participant BE as Be
     participant R as Redis
     participant M as Gmail (SMTP)
-    K->>FE: /forgot-password, nhập số điện thoại
+    K->>FE: /forgot-password, nhập email
     FE->>BE: POST /auth/forgot-password
     BE->>R: lưu OTP đã băm HMAC (hết hạn 2 phút)
     BE-->>M: gửi email OTP (bất đồng bộ)
@@ -381,7 +381,7 @@ Thêm một thông báo mới: khai báo tên sự kiện trong `domain-events.t
 - **Tài khoản:** sửa họ tên, email, số điện thoại. **Đổi mật khẩu** ở nút cùng trang.
 - **Sổ địa chỉ:** thêm, sửa, xóa, đặt mặc định.
 - **Yêu thích:** menu **Bộ sưu tập** trên đầu trang dẫn tới danh sách sản phẩm đã thả tim.
-- **Quên mật khẩu:** ở trang đăng nhập bấm **Quên mật khẩu** → nhập số điện thoại → nhập OTP trong email → đặt mật khẩu mới.
+- **Quên mật khẩu:** ở trang đăng nhập bấm **Quên mật khẩu** → nhập email → nhập OTP trong email → đặt mật khẩu mới.
 
 ### 7.2 Quản trị viên
 
