@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Be_Vietnam_Pro, Cormorant_Garamond } from "next/font/google";
+import { Lora } from "next/font/google";
 import { Suspense } from "react";
 import { ShopSync } from "@/components/layout/ShopSync";
 import { ToastHost } from "@/components/ui/ToastHost";
@@ -7,13 +7,9 @@ import { BRAND_DESCRIPTION, BRAND_NAME, BRAND_TAGLINE } from "@/constants";
 import { AuthProvider } from "@/store/auth-context";
 import "./globals.css";
 
-const beVietnam = Be_Vietnam_Pro({
-  variable: "--font-be-vietnam",
-  subsets: ["latin", "vietnamese"],
-  weight: ["300", "400", "500", "600", "700"],
-});
-const cormorant = Cormorant_Garamond({
-  variable: "--font-cormorant",
+// Một phông duy nhất (Lora) cho toàn site, giống dự án datn_healthcare_fe.
+const lora = Lora({
+  variable: "--font-lora",
   subsets: ["latin", "vietnamese"],
   weight: ["400", "500", "600", "700"],
 });
@@ -25,7 +21,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="vi" className={`${beVietnam.variable} ${cormorant.variable} h-full antialiased`}>
+    <html lang="vi" className={`${lora.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <AuthProvider>
           {children}

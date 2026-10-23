@@ -1,3 +1,4 @@
+import { PublishAfter } from '../../../aspects/publish-after.decorator.js';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { BusinessException, ErrorCode } from '../../../exceptions/index.js';
 import { startOfVietnamDay } from '../../../utils/order-code.util.js';
@@ -62,6 +63,10 @@ export class OrderAdminService {
     return this.views.adminDetail(order);
   }
 
+  /** Aspect: khi admin chuyển đơn sang "Giao hàng thành công" (bước cuối) thì phát "order.delivered" để gửi email cho khách. */
+  @PublishAfter('order.delivered', (_result: unknown, args: unknown[]) =>
+    (args[2] as UpdateOrderStatusDto).status === OrderStatus.DELIVERED ? { orderId: args[0] as number } : null,
+  )
   async updateStatus(id: number, adminId: number, dto: UpdateOrderStatusDto) {
     const note = dto.note?.trim() || null;
     const outcome = await this.orders.withLockedOrder({ id }, async (tx) => {

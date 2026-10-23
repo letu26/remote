@@ -64,6 +64,7 @@ function Block<T>({
   children,
   className = "",
   action,
+  fixed = false,
 }: {
   title: string;
   state: State<T> & { retry: () => void };
@@ -72,11 +73,13 @@ function Block<T>({
   children: (data: T) => ReactNode;
   className?: string;
   action?: ReactNode;
+  /** Khối cao cố định: phần nội dung cuộn bên trong khi dài hơn khung. */
+  fixed?: boolean;
 }) {
   const { status, data, retry } = state;
   return (
-    <section className={`rounded-lg border border-line bg-paper p-4 shadow-card ${className}`} aria-label={title}>
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+    <section className={`rounded-lg border border-line bg-paper p-4 shadow-card ${fixed ? "flex h-72 flex-col" : ""} ${className}`} aria-label={title}>
+      <div className="mb-3 flex shrink-0 flex-wrap items-center justify-between gap-2">
         <h2 className="font-serif text-xl text-ink">{title}</h2>
         {action}
       </div>
@@ -91,7 +94,7 @@ function Block<T>({
       ) : isEmpty?.(data) ? (
         <p className="rounded-ui bg-sand px-4 py-8 text-center text-sm text-muted">{emptyText ?? "Chưa có dữ liệu."}</p>
       ) : (
-        <div className={status === "loading" ? "opacity-60 transition-opacity" : ""} aria-busy={status === "loading"}>
+        <div className={`${fixed ? "min-h-0 flex-1 overflow-y-auto pr-3 [scrollbar-gutter:stable]" : ""} ${status === "loading" ? "opacity-60 transition-opacity" : ""}`} aria-busy={status === "loading"}>
           {children(data)}
         </div>
       )}
@@ -223,14 +226,33 @@ function DashboardBody({ today, params, onNavigate }: { today: string; params: U
       </Block>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Block title="Đơn hàng theo trạng thái" state={byStatus} isEmpty={(d) => ORDER_STATUSES.every((s) => !d[s])} emptyText="Chưa có đơn hàng trong kỳ.">
+        <Block fixed title="Đơn hàng theo trạng thái" state={byStatus} isEmpty={(d) => ORDER_STATUSES.every((s) => !d[s])} emptyText="Chưa có đơn hàng trong kỳ.">
           {(d) => <StatusBars data={d} />}
         </Block>
-        <Block title="Sản phẩm bán chạy" state={topProducts} isEmpty={(d) => d.length === 0} emptyText="Chưa có sản phẩm bán ra trong kỳ.">
+        <Block fixed title="Khách mua nhiều" state={topCustomers} isEmpty={(d) => d.length === 0} emptyText="Chưa có khách mua hàng trong kỳ.">
+          {(items) => (
+            <table className="w-full text-left text-[13px]">
+              <caption className="sr-only">Khách mua nhiều</caption>
+              <thead className="sticky top-0 bg-paper text-xs uppercase text-muted">
+                <tr><th scope="col" className="py-1 font-semibold">Người dùng</th><th scope="col" className="py-1 text-right font-semibold">Đơn</th><th scope="col" className="py-1 text-right font-semibold">Tổng chi</th></tr>
+              </thead>
+              <tbody className="divide-y divide-line">
+                {items.map((c) => (
+                  <tr key={c.userId}>
+                    <td className="py-1.5"><Link href={`/admin/customers/${c.userId}`} className="font-medium text-ink hover:text-gold-deep hover:underline">{c.fullName}</Link><div className="text-xs text-muted">{c.phone}</div></td>
+                    <td className="py-1.5 text-right">{c.orders}</td>
+                    <td className="py-1.5 text-right">{formatVND(c.totalSpent)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </Block>
+        <Block fixed title="Sản phẩm bán chạy" state={topProducts} isEmpty={(d) => d.length === 0} emptyText="Chưa có sản phẩm bán ra trong kỳ.">
           {(items) => (
             <table className="w-full text-left text-[13px]">
               <caption className="sr-only">Sản phẩm bán chạy</caption>
-              <thead className="text-xs uppercase text-muted">
+              <thead className="sticky top-0 bg-paper text-xs uppercase text-muted">
                 <tr><th scope="col" className="py-1 font-semibold">Sản phẩm</th><th scope="col" className="py-1 text-right font-semibold">SL</th><th scope="col" className="py-1 text-right font-semibold">Doanh thu</th></tr>
               </thead>
               <tbody className="divide-y divide-line">
@@ -248,11 +270,11 @@ function DashboardBody({ today, params, onNavigate }: { today: string; params: U
             </table>
           )}
         </Block>
-        <Block title="Tồn kho thấp" state={lowStock} isEmpty={(d) => d.length === 0} emptyText="Không có sản phẩm nào sắp hết hàng.">
+        <Block fixed title="Tồn kho thấp" state={lowStock} isEmpty={(d) => d.length === 0} emptyText="Không có sản phẩm nào sắp hết hàng.">
           {(items) => (
             <table className="w-full text-left text-[13px]">
               <caption className="sr-only">Biến thể tồn kho thấp</caption>
-              <thead className="text-xs uppercase text-muted">
+              <thead className="sticky top-0 bg-paper text-xs uppercase text-muted">
                 <tr><th scope="col" className="py-1 font-semibold">Sản phẩm</th><th scope="col" className="py-1 font-semibold">SKU / Size</th><th scope="col" className="py-1 text-right font-semibold">Tồn</th></tr>
               </thead>
               <tbody className="divide-y divide-line">
@@ -261,25 +283,6 @@ function DashboardBody({ today, params, onNavigate }: { today: string; params: U
                     <td className="py-1.5"><Link href={`/admin/products/${i.productId}`} className="font-medium text-ink hover:text-gold-deep hover:underline">{i.productName}</Link></td>
                     <td className="py-1.5 text-xs text-muted">{i.sku}{i.size ? ` / ${i.size}` : ""}</td>
                     <td className={`py-1.5 text-right font-semibold ${i.stock === 0 ? "text-danger" : ""}`}>{i.stock}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </Block>
-        <Block title="Khách mua nhiều" state={topCustomers} isEmpty={(d) => d.length === 0} emptyText="Chưa có khách mua hàng trong kỳ.">
-          {(items) => (
-            <table className="w-full text-left text-[13px]">
-              <caption className="sr-only">Khách mua nhiều</caption>
-              <thead className="text-xs uppercase text-muted">
-                <tr><th scope="col" className="py-1 font-semibold">Người dùng</th><th scope="col" className="py-1 text-right font-semibold">Đơn</th><th scope="col" className="py-1 text-right font-semibold">Tổng chi</th></tr>
-              </thead>
-              <tbody className="divide-y divide-line">
-                {items.map((c) => (
-                  <tr key={c.userId}>
-                    <td className="py-1.5"><Link href={`/admin/customers/${c.userId}`} className="font-medium text-ink hover:text-gold-deep hover:underline">{c.fullName}</Link><div className="text-xs text-muted">{c.phone}</div></td>
-                    <td className="py-1.5 text-right">{c.orders}</td>
-                    <td className="py-1.5 text-right">{formatVND(c.totalSpent)}</td>
                   </tr>
                 ))}
               </tbody>

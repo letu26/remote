@@ -93,7 +93,7 @@ export function SiteHeader() {
         className={`pointer-events-none absolute inset-x-0 top-full h-2 bg-gradient-to-b from-ink/10 to-transparent transition-opacity duration-200 ${scrolled ? "opacity-100" : "opacity-0"}`}
       />
       <div className="mx-auto max-w-7xl px-4">
-        <div className="flex items-center gap-2 py-2 md:gap-5">
+        <div className="flex items-center gap-2 py-2 md:gap-5 lg:grid lg:grid-cols-[1fr_minmax(0,36rem)_1fr]">
           <button
             type="button"
             onClick={() => setMenuOpen(true)}
@@ -103,9 +103,9 @@ export function SiteHeader() {
           >
             <MenuIcon />
           </button>
-          <BrandLogo className="mr-auto md:mr-0" />
-          <HeaderSearch className="hidden max-w-xl flex-1 md:block" />
-          <div className="flex items-center gap-1 md:ml-auto">
+          <BrandLogo className="mr-auto md:mr-0 lg:justify-self-start" />
+          <HeaderSearch className="hidden max-w-xl flex-1 md:block lg:max-w-none lg:flex-none" />
+          <div className="flex items-center gap-1 md:ml-auto lg:ml-0 lg:justify-self-end">
             <AccountLink />
             {status === "authenticated" && (
               <Link

@@ -6,6 +6,7 @@ import 'dotenv/config';
 import mysql from 'mysql2/promise';
 import request from 'supertest';
 import { AppModule } from '../src/app.module.js';
+import { MailService } from '../src/modules/mail/services/mail.service.js';
 import { configureApp } from '../src/app.setup.js';
 import { ImageStorage } from '../src/modules/media/services/image-storage.js';
 
@@ -137,7 +138,7 @@ beforeAll(async () => {
     charset: 'utf8mb4',
   });
   await cleanup();
-  const m = await Test.createTestingModule({ imports: [AppModule] }).overrideProvider(ImageStorage).useValue(noStorage).compile();
+  const m = await Test.createTestingModule({ imports: [AppModule] }).overrideProvider(ImageStorage).useValue(noStorage).overrideProvider(MailService).useValue({ sendOtpMail: () => undefined, sendOrderPaidMail: () => undefined, sendOrderDeliveredMail: () => undefined }).compile();
   app = m.createNestApplication();
   configureApp(app);
   await app.init();

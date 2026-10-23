@@ -22,6 +22,7 @@ import { CustomersAdminModule } from './modules/customers-admin/customers-admin.
 import { PromotionsAdminModule } from './modules/promotions-admin/promotions-admin.module.js';
 import { StatsModule } from './modules/stats/stats.module.js';
 import { LocationsModule } from './modules/locations/locations.module.js';
+import { NotificationsModule } from './modules/notifications/notifications.module.js';
 import { OrdersModule } from './modules/orders/orders.module.js';
 import { PaymentsModule } from './modules/payments/payments.module.js';
 import { ShippingMethodsModule } from './modules/shipping-methods/shipping-methods.module.js';
@@ -32,6 +33,7 @@ import { RedisModule } from './modules/redis/redis.module.js';
 import { TokenBlacklistModule } from './modules/token-blacklist/token-blacklist.module.js';
 import { UsersModule } from './modules/users/users.module.js';
 import { WishlistsModule } from './modules/wishlists/wishlists.module.js';
+import { ZaloPayModule } from './modules/zalopay/zalopay.module.js';
 
 @Module({
   imports: [
@@ -60,6 +62,7 @@ import { WishlistsModule } from './modules/wishlists/wishlists.module.js';
     PagesModule,
     SiteInfoModule,
     LocationsModule,
+    NotificationsModule,
     OrdersModule,
     PaymentsModule,
     SettingsModule,
@@ -68,6 +71,7 @@ import { WishlistsModule } from './modules/wishlists/wishlists.module.js';
     ReviewsModule,
     UsersModule,
     WishlistsModule,
+    ZaloPayModule,
   ],
   controllers: [AppController],
   providers: [AppService],

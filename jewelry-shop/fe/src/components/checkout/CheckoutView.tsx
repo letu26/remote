@@ -254,7 +254,7 @@ export function CheckoutView() {
                     name="address"
                     checked={effectiveAddress === a.id}
                     onChange={() => setAddressId(a.id)}
-                    className="mt-1 accent-[#8c6a1c]"
+                    className="mt-1 accent-gold-deep"
                   />
                   <span className="min-w-0">
                     <span className="block font-medium text-ink">
@@ -288,7 +288,7 @@ export function CheckoutView() {
                     name="shipping"
                     checked={effectiveShipping === m.id}
                     onChange={() => setShippingId(m.id)}
-                    className="mt-1 accent-[#8c6a1c]"
+                    className="mt-1 accent-gold-deep"
                   />
                   <span className="flex min-w-0 flex-1 justify-between gap-3">
                     <span>
@@ -305,19 +305,22 @@ export function CheckoutView() {
 
         <Section title="Phương thức thanh toán">
           <div className="space-y-2.5" role="radiogroup" aria-label="Phương thức thanh toán">
-            {(["cod", "bank_transfer"] as const).map((p) => (
+            {(["cod", "bank_transfer", "zalopay"] as const).map((p) => (
               <label key={p} className={radioCard(payment === p)}>
                 <input
                   type="radio"
                   name="payment"
                   checked={payment === p}
                   onChange={() => setPayment(p)}
-                  className="mt-1 accent-[#8c6a1c]"
+                  className="mt-1 accent-gold-deep"
                 />
                 <span>
                   <span className="block font-medium text-ink">{PAYMENT_METHOD_LABEL[p]}</span>
                   {p === "bank_transfer" && (
                     <span className="block text-muted">Bạn sẽ thấy thông tin chuyển khoản sau khi đặt hàng.</span>
+                  )}
+                  {p === "zalopay" && (
+                    <span className="block text-muted">Bạn sẽ thấy mã QR để quét bằng app ZaloPay sau khi đặt hàng.</span>
                   )}
                 </span>
               </label>

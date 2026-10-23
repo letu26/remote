@@ -86,7 +86,7 @@ export function BankTransferForm() {
     );
 
   return (
-    <form onSubmit={onSubmit} noValidate aria-label="Thông tin chuyển khoản" className="max-w-xl space-y-4 rounded-lg border border-line bg-paper p-5 shadow-card">
+    <form onSubmit={onSubmit} noValidate aria-label="Thông tin chuyển khoản" className="mx-auto max-w-xl space-y-4 rounded-2xl border border-line bg-paper p-5 shadow-card">
       <p className="text-sm text-muted">Khách chọn thanh toán chuyển khoản sẽ thấy thông tin này sau khi đặt hàng.</p>
       <Field label="Ngân hàng" name="bankName" value={values.bankName} error={errors.bankName} maxLength={100} onChange={(e) => set("bankName", e.target.value)} />
       <Field label="Số tài khoản" name="accountNumber" inputMode="numeric" value={values.accountNumber} error={errors.accountNumber} maxLength={30} onChange={(e) => set("accountNumber", e.target.value)} />

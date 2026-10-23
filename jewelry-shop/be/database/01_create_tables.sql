@@ -197,7 +197,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `subtotal` decimal(15,0) NOT NULL,
   `shippingFee` decimal(15,0) NOT NULL DEFAULT '0',
   `total` decimal(15,0) NOT NULL,
-  `paymentMethod` enum('cod','bank_transfer') NOT NULL,
+  `paymentMethod` enum('cod','bank_transfer','zalopay') NOT NULL,
   `paymentStatus` enum('unpaid','paid') NOT NULL DEFAULT 'unpaid',
   `paidAt` datetime DEFAULT NULL,
   `status` enum('pending','confirmed','preparing','shipping','delivered','cancelled') NOT NULL DEFAULT 'pending',
@@ -411,4 +411,23 @@ CREATE TABLE IF NOT EXISTS `wishlists` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_wishlists_userId_productId` (`userId`,`productId`),
   KEY `idx_wishlists_productId` (`productId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE IF NOT EXISTS `zalopay_transactions` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `createdAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updatedAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+  `orderId` int unsigned NOT NULL,
+  `appTransId` varchar(40) NOT NULL,
+  `amount` decimal(15,0) NOT NULL,
+  `status` enum('pending','paid','failed') NOT NULL DEFAULT 'pending',
+  `orderUrl` varchar(1000) NOT NULL,
+  `expiresAt` datetime NOT NULL,
+  `zpTransId` bigint unsigned DEFAULT NULL,
+  `channel` int DEFAULT NULL,
+  `paidAt` datetime DEFAULT NULL,
+  `callbackData` text,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_zalopay_transactions_appTransId` (`appTransId`),
+  KEY `idx_zalopay_transactions_orderId_createdAt` (`orderId`, `createdAt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

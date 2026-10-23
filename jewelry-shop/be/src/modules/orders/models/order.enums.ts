@@ -10,6 +10,7 @@ export enum OrderStatus {
 export enum PaymentMethod {
   COD = 'cod',
   BANK_TRANSFER = 'bank_transfer',
+  ZALOPAY = 'zalopay',
 }
 
 export enum PaymentStatus {

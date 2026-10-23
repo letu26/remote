@@ -21,6 +21,7 @@ import { notify } from "@/utils/notify";
 import { ORDER_STATUS_LABEL, PAYMENT_METHOD_LABEL, PAYMENT_STATUS_LABEL } from "@/utils/order";
 import { artFor, metalFor } from "@/utils/product-art";
 import { StatusBadge } from "./OrdersView";
+import { ZaloPayBox } from "./ZaloPayBox";
 
 function CopyRow({ label, value, copyLabel }: { label: string; value: string; copyLabel?: string }) {
   const onCopy = async () => {
@@ -63,6 +64,8 @@ function Timeline({ history }: { history: OrderDetail["history"] }) {
     <ol aria-label="Tiến trình đơn hàng" className="space-y-4">
       {history.map((h, i) => {
         const last = i === history.length - 1;
+        // Mục ghi chú không đổi trạng thái đơn (ví dụ "ZaloPay: đã nhận thanh toán"): hiện ghi chú làm tiêu đề, không lặp tên trạng thái.
+        const noteOnly = i > 0 && history[i - 1]?.status === h.status && !!h.note;
         return (
           <li key={`${h.status}-${h.createdAt}-${i}`} className="relative flex gap-3" aria-current={last ? "step" : undefined}>
             <span
@@ -72,9 +75,11 @@ function Timeline({ history }: { history: OrderDetail["history"] }) {
               }`}
             />
             <div className="text-sm">
-              <p className={last ? "font-semibold text-ink" : "text-ink"}>{ORDER_STATUS_LABEL[h.status] ?? h.status}</p>
+              <p className={last ? "font-semibold text-ink" : "text-ink"}>
+                {noteOnly ? h.note : (ORDER_STATUS_LABEL[h.status] ?? h.status)}
+              </p>
               <p className="text-xs text-muted">{formatDateTime(h.createdAt)}</p>
-              {h.note && <p className="text-xs text-muted">{h.note}</p>}
+              {!noteOnly && h.note && <p className="text-xs text-muted">{h.note}</p>}
             </div>
           </li>
         );
@@ -167,6 +172,16 @@ export function OrderDetailView() {
       )}
 
       {order.paymentInstructions && <BankTransferBox info={order.paymentInstructions} />}
+
+      {order.paymentMethod === "zalopay" && order.paymentStatus === "unpaid" && order.status !== "cancelled" && (
+        <ZaloPayBox
+          orderCode={order.code}
+          onPaid={() => {
+            setUpdated(null);
+            reload();
+          }}
+        />
+      )}
 
       {/* Lưới 2x2: hàng trên và hàng dưới mỗi hàng cao bằng nhau; danh sách bên trong tự cuộn khi dài hơn khung. */}
       <div className="grid gap-5 lg:grid-cols-[1fr_20rem] lg:grid-rows-[16rem_15rem]">

@@ -35,7 +35,7 @@ export function ProductCard({ product }: { product: ProductSummary }) {
       </div>
       <div className="flex flex-1 flex-col gap-1 p-3.5">
         <p className="text-[11px] uppercase tracking-[0.14em] text-muted">{product.category.name}</p>
-        <h3 className="line-clamp-2 min-h-[2.5rem] font-serif text-[1.05rem] leading-snug text-ink">
+        <h3 className="line-clamp-2 min-h-[2.5rem] [overflow-wrap:anywhere] font-serif text-[1.05rem] leading-snug text-ink">
           <Link href={href} className="hover:text-gold-deep">
             {product.name}
           </Link>

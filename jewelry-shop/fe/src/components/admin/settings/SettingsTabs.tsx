@@ -12,8 +12,8 @@ const TABS = [
 export function SettingsTabs() {
   const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("site");
   return (
-    <div className="space-y-4">
-      <div role="tablist" aria-label="Nhóm cài đặt" className="flex gap-1 border-b border-line">
+    <div className="mx-auto max-w-4xl space-y-4">
+      <div role="tablist" aria-label="Nhóm cài đặt" className="flex justify-center gap-1 border-b border-line">
         {TABS.map((t) => (
           <button
             key={t.id}

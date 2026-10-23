@@ -90,3 +90,6 @@ ALTER TABLE `wishlists`
 
 ALTER TABLE `token_blacklist`
   ADD CONSTRAINT `fk_token_blacklist_userId` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+ALTER TABLE `zalopay_transactions`
+  ADD CONSTRAINT `fk_zalopay_transactions_orderId` FOREIGN KEY (`orderId`) REFERENCES `orders` (`id`) ON DELETE CASCADE;

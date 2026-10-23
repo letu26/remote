@@ -59,7 +59,7 @@ export function Hero() {
       <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-10 sm:py-16 lg:grid-cols-2">
         <div className="text-center lg:text-left">
           <p className="mb-4 text-xs uppercase tracking-[0.4em] text-gold-deep">{BRAND_TAGLINE}</p>
-          <h1 className="font-serif text-4xl leading-[1.1] text-ink sm:text-6xl">
+          <h1 className="font-serif text-4xl leading-[1.15] text-ink sm:text-5xl">
             Vẻ đẹp tinh khôi, <span className="text-gold-deep">lấp lánh</span> cùng {BRAND_NAME}
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted lg:mx-0 sm:text-lg">

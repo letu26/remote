@@ -29,6 +29,7 @@ export const PAYMENT_STATUS_LABEL: Record<PaymentStatus, string> = {
 export const PAYMENT_METHOD_LABEL: Record<PaymentMethod, string> = {
   cod: "Thanh toán khi nhận hàng (COD)",
   bank_transfer: "Chuyển khoản ngân hàng",
+  zalopay: "Quét mã QR ZaloPay",
 };
 
 export const orderStatusLabel = (s: string) => ORDER_STATUS_LABEL[s as OrderStatus] ?? s;

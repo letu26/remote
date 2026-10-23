@@ -89,17 +89,15 @@ export function SiteInfoForm() {
   );
 
   return (
-    <form onSubmit={onSubmit} noValidate aria-label="Thông tin cửa hàng" className="max-w-2xl space-y-4 rounded-lg border border-line bg-paper p-5 shadow-card">
+    <form onSubmit={onSubmit} noValidate aria-label="Thông tin cửa hàng" className="space-y-4 rounded-2xl border border-line bg-paper p-5 shadow-card">
       <p className="text-sm text-muted">Hiển thị ở đầu/chân trang cửa hàng và trên hóa đơn in.</p>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {f("brandName", "Tên thương hiệu", { maxLength: 60 })}
         {f("slogan", "Khẩu hiệu", { maxLength: 150 })}
         {f("hotline", "Hotline", { maxLength: 30 })}
         {f("email", "Email", { maxLength: 150 })}
-      </div>
-      {f("address", "Địa chỉ", { maxLength: 255 })}
-      {f("openingHours", "Giờ mở cửa", { maxLength: 100 })}
-      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="sm:col-span-2">{f("address", "Địa chỉ", { maxLength: 255 })}</div>
+        {f("openingHours", "Giờ mở cửa", { maxLength: 100 })}
         {f("facebook", "Facebook (https://...)", { maxLength: 255 })}
         {f("zalo", "Zalo (https://...)", { maxLength: 255 })}
         {f("instagram", "Instagram (https://...)", { maxLength: 255 })}
@@ -107,7 +105,7 @@ export function SiteInfoForm() {
       </div>
       <div className="space-y-1.5">
         <label htmlFor="footerText" className="block text-sm font-medium text-ink">Nội dung chân trang</label>
-        <textarea id="footerText" name="footerText" rows={3} maxLength={300} aria-invalid={!!errors.footerText} className={inputClass(!!errors.footerText)} value={values.footerText} onChange={(e) => set("footerText", e.target.value)} />
+        <textarea id="footerText" name="footerText" rows={2} maxLength={300} aria-invalid={!!errors.footerText} className={inputClass(!!errors.footerText)} value={values.footerText} onChange={(e) => set("footerText", e.target.value)} />
         {errors.footerText && <p role="alert" className="text-xs text-danger">{errors.footerText}</p>}
       </div>
       <div className="flex justify-end">

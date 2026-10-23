@@ -1,6 +1,6 @@
 export type OrderStatus = "pending" | "confirmed" | "preparing" | "shipping" | "delivered" | "cancelled";
 export type PaymentStatus = "unpaid" | "paid";
-export type PaymentMethod = "cod" | "bank_transfer";
+export type PaymentMethod = "cod" | "bank_transfer" | "zalopay";
 
 export interface AdminOrderListItem {
   id: number;

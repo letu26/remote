@@ -1,7 +1,7 @@
 /** Kiểu dữ liệu đặt hàng (API_CONTRACT_PHASE4.md). */
 
 export type OrderStatus = "pending" | "confirmed" | "preparing" | "shipping" | "delivered" | "cancelled";
-export type PaymentMethod = "cod" | "bank_transfer";
+export type PaymentMethod = "cod" | "bank_transfer" | "zalopay";
 export type PaymentStatus = "unpaid" | "paid";
 
 export interface ShippingMethod {

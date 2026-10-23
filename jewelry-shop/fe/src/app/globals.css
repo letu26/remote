@@ -52,8 +52,8 @@
   --color-danger: var(--danger);
   --color-success: var(--success);
   --color-sale: var(--sale);
-  --font-sans: var(--font-be-vietnam), system-ui, sans-serif;
-  --font-serif: var(--font-cormorant), Georgia, serif;
+  --font-sans: var(--font-lora), Georgia, serif;
+  --font-serif: var(--font-lora), Georgia, serif;
   --shadow-card: var(--shadow-card);
   --shadow-pop: var(--shadow-pop);
   --radius-ui: var(--radius-ui);
@@ -72,13 +72,22 @@ body {
     var(--page);
   background-attachment: fixed;
   color: var(--ink);
-  font-family: var(--font-be-vietnam), system-ui, sans-serif;
+  font-family: var(--font-lora), Georgia, serif;
 }
 
-/* Font serif (Cormorant) mặc định dùng chữ số kiểu cổ điển (1 trông như I, 0 như o); chuyển sang chữ số thường cho dễ đọc. */
-.font-serif {
-  font-variant-numeric: lining-nums;
-  font-feature-settings: "lnum" 1;
+/* Khu vực quản trị: không cho cả trang "nảy" lộ nền trống dưới cùng khi cuộn quá đáy. */
+:root:has(.admin-root) { overscroll-behavior: none; }
+
+/* Khu vực quản trị (màn rộng): trang danh sách vừa khít một màn hình, không cuộn cả trang;
+   chỉ phần bảng cuộn bên trong, phần bộ lọc và phân trang đứng yên. Trang không có bảng (biểu mẫu) vẫn cuộn bình thường. */
+@media (min-width: 1024px) {
+  .admin-fit:has(table) { display: flex; flex-direction: column; overflow: hidden; }
+  .admin-fit:has(table) > :first-child { display: flex; flex-direction: column; flex: 1 1 0; min-height: 0; }
+  .admin-fit:has(table) > :first-child :is(div, section):has(> .overflow-x-auto) { display: flex; flex-direction: column; flex: 1 1 0; min-height: 0; }
+  .admin-fit:has(table) .overflow-x-auto:has(> table) { flex: 1 1 0; min-height: 0; overflow: auto; margin-bottom: 0.25rem; }
+  /* Dải trắng dính ở đáy vùng bảng: che phần đầu của dòng kế tiếp, tạo đoạn trắng dưới dòng cuối nhìn thấy. */
+  .admin-fit:has(table) .overflow-x-auto:has(> table)::after { content: ""; display: block; position: sticky; bottom: 0; height: var(--fit-gap, 1.25rem); background: var(--paper); }
+  .admin-fit:has(table) thead th { position: sticky; top: 0; z-index: 1; background: var(--sand); }
 }
 
 /* Ô chọn (select): bỏ mũi tên gốc dính sát mép, vẽ mũi tên riêng cách phải một đoạn. */
