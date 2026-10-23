@@ -23,7 +23,10 @@ function AdminShell({ title, children }: { title: string; children: ReactNode })
   const { user } = useAuth();
   const pathname = usePathname();
   const mainRef = useRef<HTMLElement>(null);
-  useFitTableRows(mainRef, pathname !== "/admin");
+  // Chỉ trang danh sách (đúng hai đoạn đường dẫn, ví dụ /admin/orders) vừa khít một màn hình. Trang chi tiết, thêm mới và sửa
+  // (/admin/orders/<id>, /admin/products/new...) có bảng nhỏ bên trong nhưng phải cuộn cả trang bình thường.
+  const fitPage = /^\/admin\/[^/]+\/?$/.test(pathname);
+  useFitTableRows(mainRef, fitPage);
   return (
     <div className="admin-root relative min-h-screen bg-page lg:flex lg:h-screen lg:overflow-hidden">
       <aside className="border-b border-line bg-paper lg:sticky lg:top-0 lg:h-screen lg:w-56 lg:shrink-0 lg:overflow-y-auto lg:border-b-0 lg:border-r">
@@ -44,8 +47,8 @@ function AdminShell({ title, children }: { title: string; children: ReactNode })
             <LogoutLink size="sm" />
           </div>
         </header>
-        {/* Trừ trang tổng quan: trang có bảng vừa khít một màn hình, bảng tự cuộn bên trong (xem .admin-fit trong globals.css). */}
-        <main ref={mainRef} className={`min-h-0 flex-1 overscroll-contain p-3 sm:p-5 lg:overflow-y-auto ${pathname === "/admin" ? "" : "admin-fit"}`}>{children}</main>
+        {/* Trang danh sách vừa khít một màn hình, bảng tự cuộn bên trong (xem .admin-fit trong globals.css). */}
+        <main ref={mainRef} className={`min-h-0 flex-1 overscroll-contain p-3 sm:p-5 lg:overflow-y-auto ${fitPage ? "admin-fit" : ""}`}>{children}</main>
       </div>
     </div>
   );
