@@ -8,6 +8,8 @@ Website bán trang sức đá quý gồm **giao diện khách hàng**, **khu v�
 
 > Tên thương hiệu "Lumière Gems" là giá trị mặc định, admin đổi được trong **Cài đặt → Thông tin cửa hàng**.
 
+> Mô tả chi tiết từng chức năng (đăng nhập, đặt hàng, thanh toán, gửi email, thống kê...): xem [docs/CHUC_NANG_CHI_TIET.md](docs/CHUC_NANG_CHI_TIET.md).
+
 ---
 
 ## Mục lục
