@@ -1,0 +1,8 @@
+tunnel: ceaa2675-57b9-4c39-95f8-145b274d1419
+credentials-file: /Users/tyler/.cloudflared/ceaa2675-57b9-4c39-95f8-145b274d1419.json
+ingress:
+  # Chỉ mở đúng đường dẫn nhận callback của ZaloPay; mọi đường dẫn khác của be trả 404 từ bên ngoài.
+  - hostname: pay-dev.healtcareweb.site
+    path: ^/api/payments/zalopay/callback$
+    service: http://localhost:4000
+  - service: http_status:404
