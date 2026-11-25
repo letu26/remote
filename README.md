@@ -36,10 +36,12 @@ Website bán trang sức đá quý gồm **giao diện khách hàng**, **khu v�
 - Đăng ký, đăng nhập (bằng số điện thoại), quên mật khẩu bằng OTP qua email, đổi mật khẩu.
 - Giỏ hàng, yêu thích, sổ địa chỉ (tỉnh/thành và phường/xã sau sáp nhập 2025).
 - Đặt hàng, chọn vận chuyển và thanh toán (**COD, chuyển khoản, ZaloPay quét QR**), theo dõi và hủy đơn, đánh giá sản phẩm đã nhận.
-- Cẩm nang (bài viết), trang chính sách, hỏi đáp, chatbot trả lời theo từ khóa.
+- Cẩm nang (bài viết), trang chính sách, hỏi đáp.
+- **Chatbot AI** tư vấn trang sức và **gợi ý sản phẩm** theo lịch sử xem, giỏ hàng, đơn đã mua.
 
 **Quản trị (admin)**
 - Tổng quan: doanh thu theo ngày/tháng/năm, đơn theo trạng thái, sản phẩm bán chạy, tồn kho thấp, khách mua nhiều.
+- **AI phân tích doanh thu** của khoảng ngày đang chọn.
 - Đơn hàng: tìm kiếm, lọc, chuyển trạng thái từng bước, xác nhận thanh toán chuyển khoản, in hóa đơn.
 - Sản phẩm (ảnh, biến thể/size, đá quý), danh mục, chất liệu, loại đá, bộ sưu tập, khuyến mại theo sản phẩm.
 - Người dùng (khóa/mở khóa, đổi quyền), đánh giá (ẩn/hiện).
@@ -197,6 +199,14 @@ Không đưa file `.env` lên git (đã nằm trong `.gitignore`).
 | `ZLP_ENDPOINT` | Mặc định `https://sb-openapi.zalopay.vn/v2/` (sandbox) |
 | `ZLP_CALLBACK_URL` | Địa chỉ công khai của `POST /api/payments/zalopay/callback`. Để trống khi chưa có đường hầm |
 | `ZLP_REDIRECT_URL` | (Tùy chọn) trang chuyển khách về sau khi trả trong app |
+| `GEMINI_API_KEY_CHATBOT` | Khóa Gemini cho chatbot tư vấn |
+| `GEMINI_API_KEY_REVENUE` | Khóa Gemini cho phân tích doanh thu |
+| `GEMINI_API_KEY_RECOMMEND` | Khóa Gemini cho gợi ý sản phẩm |
+| `GEMINI_API_KEY` | (Tùy chọn) khóa chung, dùng cho tính năng không có khóa riêng |
+| `GEMINI_MODEL` | Model chính, mặc định `gemini-3.5-flash-lite` |
+| `GEMINI_FALLBACK_MODEL` | Model dự phòng khi model chính lỗi, mặc định `gemini-3.1-flash-lite` |
+
+Lấy khóa tại <https://aistudio.google.com/apikey>. Hạn mức miễn phí tính theo project, nên muốn mỗi tính năng có hạn mức riêng thì tạo khóa ở các project (hoặc tài khoản) khác nhau. Không bắt buộc có khóa, xem mục 6.12.
 
 ### Frontend: `fe/.env`
 
@@ -288,7 +298,7 @@ flowchart LR
 | Phương thức | Cách hoạt động |
 |---|---|
 | **COD** | Trả khi nhận hàng. Khi đơn chuyển sang "Giao hàng thành công", hệ thống **tự** đặt "Đã thanh toán". |
-| **Chuyển khoản** | Sau khi đặt, khách thấy thông tin tài khoản (lấy từ Cài đặt, nội dung chuyển khoản có mã đơn). Admin kiểm tra tiền về rồi bấm **Xác nhận đã thanh toán** trên trang chi tiết đơn (có thể hủy xác nhận). |
+| **Chuyển khoản** | Sau khi đặt, khách thấy thông tin tài khoản (lấy từ Cài đặt, nội dung chuyển khoản có mã đơn). Admin kiểm tra tiền về rồi bấm **Xác nhận đã thanh toán** trên trang chi tiết đơn; đơn **tự chuyển sang Đã xác nhận**. Hủy xác nhận thanh toán không đưa đơn về lại Chờ xác nhận. |
 | **ZaloPay (QR)** | Tự động, xem mục 6.8. |
 
 Đơn đã thanh toán rồi bị hủy: hệ thống **chỉ ghi nhận hủy**, hoàn tiền xử lý ngoài hệ thống.
@@ -323,7 +333,7 @@ sequenceDiagram
 4. **Chống trùng:** callback gửi nhiều lần chỉ cộng một lần; lần sau vẫn trả `1`.
 5. **Dự phòng khi mất callback:** mỗi lần fe hỏi trạng thái (tối đa 1 lần mỗi 3 giây cho mỗi giao dịch), be chủ động gọi `POST /v2/query` của ZaloPay (ký `HMAC(key1, app_id|app_trans_id|key1)`). Nhờ đó khi chưa có đường hầm, đơn vẫn cập nhật (chậm vài giây). Dòng ghi chú trong tiến trình sẽ ghi "(xác nhận qua truy vấn)".
 6. **Hết hạn:** quá 15 phút chưa trả thì giao dịch được đánh dấu thất bại, khách bấm **Tạo mã mới**.
-7. **Sau khi trả:** đơn chuyển "Đã thanh toán", **trạng thái giao hàng vẫn là "Chờ xác nhận"** cho tới khi admin xử lý (mục 6.9).
+7. **Sau khi trả:** đơn chuyển "Đã thanh toán", đơn đang chờ **tự chuyển sang "Đã xác nhận"** và admin nhận email để chuẩn bị hàng (mục 6.9). Vì đơn đã duyệt nên khách không tự hủy được nữa.
 
 ### 6.9 Email tự động bằng aspect (AOP)
 
@@ -331,7 +341,7 @@ Việc gửi email tách khỏi nghiệp vụ nhờ decorator **`@PublishAfter`*
 
 | Sự kiện | Phát ở đâu | Email gửi |
 |---|---|---|
-| `order.paid` | `ZaloPayService.settlePayment`, đúng **một lần** ở lần ghi nhận đầu tiên | **Mọi admin đang hoạt động**: mã đơn, tổng tiền, khách, sản phẩm, nút "Xem và phê duyệt đơn" (`/admin/orders/<id>`) |
+| `order.paid` | `ZaloPayService.settlePayment`, đúng **một lần** ở lần ghi nhận đầu tiên | **Mọi admin đang hoạt động**: mã đơn, tổng tiền, khách, sản phẩm, nút "Xem đơn và chuẩn bị hàng" (`/admin/orders/<id>`) |
 | `order.delivered` | `OrderAdminService.updateStatus` khi chuyển sang "Giao hàng thành công" | **Khách**: cảm ơn, tóm tắt đơn, nút xem đơn và đánh giá sản phẩm |
 
 Thêm một thông báo mới: khai báo tên sự kiện trong `domain-events.ts`, gắn `@PublishAfter` vào đúng nghiệp vụ, rồi thêm người nghe trong `NotificationsModule`.
@@ -342,14 +352,28 @@ Thêm một thông báo mới: khai báo tên sự kiện trong `domain-events.t
 - Điểm từ 1 đến 5, nhận xét tùy chọn tối đa 1000 ký tự. Tên người đánh giá hiển thị công khai được che bớt.
 - Admin chỉ **ẩn/hiện** đánh giá (không xóa). Đánh giá ẩn không tính vào điểm trung bình.
 
-### 6.11 Nội dung (CMS) và chatbot
+### 6.11 Nội dung (CMS)
 
 - Bài viết và trang nội dung viết bằng **Markdown** (không cho HTML thô). Ảnh tải lên Cloudinary.
 - Có 6 trang hệ thống (giới thiệu, bảo hành, đổi trả, giao hàng, điều khoản, hướng dẫn đo size): không xóa được và không đổi đường dẫn.
 - Menu đầu và chân trang do admin quản lý, tối đa 2 cấp.
-- **Chatbot** trả lời theo từ khóa trên danh sách hỏi đáp (không dùng AI), giới hạn khoảng 20 câu mỗi phút cho mỗi địa chỉ IP.
 
-### 6.12 Phân quyền
+### 6.12 Tính năng AI (Google Gemini)
+
+**Cách gọi chung** (`be/src/modules/ai`): thử model chính; lỗi, hết hạn mức, quá thời gian hoặc trả lời dở dang thì thử model dự phòng; vẫn không được thì dùng cách không AI. Số liệu và danh sách sản phẩm do hệ thống lấy từ DB, AI không truy cập DB.
+
+| Tính năng | API | Gửi cho Gemini | Khi không có AI |
+|---|---|---|---|
+| Chatbot tư vấn | `POST /api/chatbot/ask` | Câu hỏi và vài tin gần nhất, tối đa 12 sản phẩm phù hợp, hỏi đáp, thông tin cửa hàng | Trả lời theo từ khóa trên danh sách hỏi đáp |
+| Gợi ý sản phẩm | `POST /api/recommendations` | Tên, danh mục, giá của sản phẩm quan tâm và đề cử | Dùng thứ tự của thuật toán chấm điểm |
+| Phân tích doanh thu | `POST /api/admin/stats/analysis` (admin) | Số liệu tổng hợp, tên sản phẩm bán chạy và sắp hết | Hiện thông báo |
+
+- **Chatbot:** lọc sản phẩm theo danh mục, loại đá, khoảng giá khách nhắc tới. Không tra cứu đơn hàng. Giới hạn 20 câu mỗi phút cho mỗi địa chỉ IP. Tin nhắn không lưu vào DB và không ghi log; trình duyệt giữ lịch sử đến khi đóng tab.
+- **Gợi ý:** thuật toán chấm điểm (mua nặng hơn thêm giỏ, thêm giỏ nặng hơn xem) đề cử tối đa 12 sản phẩm, AI chọn 4. Lịch sử xem lưu ở `localStorage` của trình duyệt nên khách vãng lai cũng có; giỏ hàng và đơn mua lấy từ DB. Chưa có tín hiệu thì ẩn khối.
+- **Doanh thu:** so với kỳ liền trước cùng số ngày; doanh thu chỉ tính đơn đã giao. Kết quả dùng lại trong 10 phút nếu số liệu không đổi.
+- **Riêng tư:** không gửi tên, số điện thoại, email, địa chỉ lấy từ DB. Email và số điện thoại khách gõ vào chat được che trước khi gửi, nhưng tên, địa chỉ tự gõ thì không. Dữ liệu ở gói miễn phí có thể được Google dùng để cải thiện sản phẩm.
+
+### 6.13 Phân quyền
 
 - `user`: các trang tài khoản, giỏ hàng, đơn của mình.
 - `admin`: toàn bộ `/admin` và API `/api/admin/**`. Vào sai quyền → trang "Không có quyền truy cập" (`403`).
@@ -392,8 +416,8 @@ Thêm một thông báo mới: khai báo tên sự kiện trong `domain-events.t
 **Duyệt và xử lý đơn hàng** (Bán hàng → Đơn hàng)
 1. Tìm theo mã đơn, tên hoặc số điện thoại người nhận; lọc theo trạng thái, thanh toán, khoảng ngày.
 2. Bấm **Xem** để mở chi tiết: sản phẩm, địa chỉ, thanh toán, tiến trình.
-3. Đơn mới đang **Chờ xác nhận** → bấm nút chuyển sang **Đã xác nhận**, rồi lần lượt **Đang chuẩn bị**, **Đang giao**, **Giao thành công**.
-4. Đơn **chuyển khoản**: kiểm tra tiền đã về, bấm **Xác nhận đã thanh toán**. Đơn **ZaloPay** đã tự cập nhật thanh toán, bạn chỉ cần duyệt đơn (và nhận email báo có đơn).
+3. Đơn **COD** mới đang **Chờ xác nhận** → bấm nút chuyển sang **Đã xác nhận**. Đơn ZaloPay và chuyển khoản được duyệt tự động khi đã nhận tiền. Sau đó chuyển lần lượt **Đang chuẩn bị**, **Đang giao**, **Giao thành công**.
+4. Đơn **chuyển khoản**: kiểm tra tiền đã về, bấm **Xác nhận đã thanh toán** (đơn tự duyệt). Đơn **ZaloPay** tự cập nhật thanh toán và tự duyệt, bạn nhận email để chuẩn bị hàng.
 5. Cần hủy: chọn **Hủy đơn** (chỉ trước khi giao), nhập lý do. Tồn kho được hoàn.
 6. **In hóa đơn** từ trang chi tiết đơn.
 
@@ -422,6 +446,7 @@ Thêm một thông báo mới: khai báo tên sự kiện trong `domain-events.t
 
 **Tổng quan**
 - Chọn khoảng thời gian (7, 30, 90 ngày hoặc tùy chọn tối đa 366 ngày) → xem doanh thu, số đơn, giá trị đơn trung bình, biểu đồ doanh thu theo ngày/tháng/năm, đơn theo trạng thái, sản phẩm bán chạy, tồn kho thấp (mặc định từ 5 trở xuống), khách mua nhiều.
+- Bấm **Phân tích kỳ đang chọn** ở khối **AI phân tích doanh thu** để xem nhận xét và đề xuất. AI có thể diễn giải sai, hãy đối chiếu với số liệu trên trang.
 
 ---
 
@@ -514,6 +539,7 @@ npm run build && npm start
 | Callback không tới be | Đường hầm có đang chạy không, be có chạy cổng 4000 không, `ZLP_CALLBACK_URL` đúng chưa (và đã khởi động lại be). Cloudflare bật chặn bot/WAF có thể chặn máy chủ ZaloPay |
 | Gọi tên miền phụ mới báo không phân giải được | Cache DNS cục bộ. Đợi vài phút hoặc đổi máy chủ DNS |
 | Redis lỗi khi đặt hàng hoặc OTP | Chưa chạy `docker compose up -d`, hoặc `REDIS_URL` sai mật khẩu |
+| Chatbot chỉ trả lời theo hỏi đáp, hoặc phân tích doanh thu báo AI đang bận | Kiểm tra khóa `GEMINI_*` trong `.env` rồi khởi động lại be. Xem log tìm `GeminiGateway`: `429` là hết hạn mức, `404` là sai tên model, `400`/`403` thường là khóa không hợp lệ |
 | Sửa `.env` nhưng không có tác dụng | Be không tự nạp lại: khởi động lại be |
 | Giao diện không nhận CSS hoặc cấu hình mới | Khởi động lại `npm run dev` của fe |
 

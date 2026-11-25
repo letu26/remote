@@ -22,6 +22,7 @@ Danh sách chức năng:
 16. [Nội dung (CMS), menu, banner](#16-nội-dung-cms-menu-banner)
 17. [Chatbot](#17-chatbot)
 18. [Cơ chế dùng chung](#18-cơ-chế-dùng-chung)
+19. [Gợi ý sản phẩm và phân tích doanh thu bằng AI](#19-gợi-ý-sản-phẩm-và-phân-tích-doanh-thu-bằng-ai)
 
 ---
 
@@ -200,7 +201,7 @@ Phương thức chọn khi đặt hàng (`paymentMethod`): `cod`, `bank_transfer
 1. Khách chọn "Chuyển khoản ngân hàng" và đặt hàng.
 2. Trang đơn hiện khung **Thông tin chuyển khoản**: ngân hàng, số tài khoản, chủ tài khoản, số tiền, nội dung chuyển khoản (chứa mã đơn). Có nút sao chép.
 3. Khách chuyển khoản.
-4. **Admin kiểm tra tiền về** rồi vào chi tiết đơn bấm **Xác nhận đã thanh toán** (có thể **hủy xác nhận**). Chỉ áp dụng cho đơn chuyển khoản chưa hủy; đơn khác trả `409`. Ghi vào lịch sử đơn.
+4. **Admin kiểm tra tiền về** rồi vào chi tiết đơn bấm **Xác nhận đã thanh toán** (đơn đang chờ **tự chuyển sang Đã xác nhận**; **hủy xác nhận** không đưa đơn về lại). Chỉ áp dụng cho đơn chuyển khoản chưa hủy; đơn khác trả `409`. Ghi vào lịch sử đơn.
 - Thông tin tài khoản do admin cấu hình ở **Cài đặt → Chuyển khoản**; mẫu nội dung phải chứa `{orderCode}` để thay bằng mã đơn. Mặc định là dữ liệu mẫu.
 
 ### 9.3 ZaloPay (quét mã QR, tự động)
@@ -224,7 +225,7 @@ Phương thức chọn khi đặt hàng (`paymentMethod`): `cod`, `bank_transfer
 3. **Callback** `POST /payments/zalopay/callback` (công khai, không có JWT):
    - Thân `{ data, mac, type }`. Be tính `HMAC-SHA256(key2, data)` và so với `mac` bằng phép so sánh thời gian cố định. Sai thì trả `{ return_code: -1 }`.
    - Kiểm tra `app_id`, tìm giao dịch theo `app_trans_id` (không thấy: `2`), **so số tiền** `amount` với số tiền giao dịch (lệch: `2`, ghi log lỗi).
-   - Ghi nhận trong **một giao dịch DB**: khóa dòng giao dịch rồi khóa dòng đơn; nếu giao dịch đã `paid` thì trả `already_paid` (không làm gì); nếu chưa thì đặt giao dịch `paid` (kèm mã giao dịch ZaloPay, kênh, thời điểm, dữ liệu gốc), đặt đơn `paymentStatus = paid` và `paidAt`, ghi lịch sử đơn "ZaloPay: đã nhận thanh toán".
+   - Ghi nhận trong **một giao dịch DB**: khóa dòng giao dịch rồi khóa dòng đơn; nếu giao dịch đã `paid` thì trả `already_paid` (không làm gì); nếu chưa thì đặt giao dịch `paid` (kèm mã giao dịch ZaloPay, kênh, thời điểm, dữ liệu gốc), đặt đơn `paymentStatus = paid` và `paidAt`, chuyển đơn đang chờ sang `confirmed`, ghi lịch sử đơn "ZaloPay: đã nhận thanh toán".
    - Phản hồi luôn HTTP 200 với `return_code`: `1` thành công (kể cả callback trùng), `-1` sai chữ ký, `2` dữ liệu hoặc số tiền không khớp, `0` lỗi tạm (ZaloPay sẽ gọi lại tối đa 3 lần).
 4. **Dự phòng khi mất callback** `GET /payments/zalopay/orders/:code/status`: mỗi lần được hỏi (tối đa một lần mỗi 3 giây cho mỗi giao dịch), be chủ động gọi `POST {ZLP_ENDPOINT}query` của ZaloPay (ký `HMAC(key1, app_id|app_trans_id|key1)`). Nếu ZaloPay báo thành công thì ghi nhận như callback (dòng lịch sử ghi thêm "xác nhận qua truy vấn"). Lỗi khi hỏi chỉ ghi log và coi như chưa có kết quả.
 5. **Hết hạn:** quá 15 phút mà chưa trả thì giao dịch bị đánh dấu `failed` và trạng thái trả về là `expired`; khách tạo mã mới.
@@ -233,7 +234,7 @@ Phương thức chọn khi đặt hàng (`paymentMethod`): `cod`, `bank_transfer
 **Trạng thái trả về của API `status`:** `paid`, `pending` (kèm `expiresAt`), `expired`, `none` (chưa có mã).
 
 **Điểm cần biết**
-- Sau khi thanh toán xong, trạng thái **giao hàng vẫn là "Chờ xác nhận"** cho tới khi admin xác nhận đơn.
+- Sau khi thanh toán xong, đơn đang chờ **tự chuyển sang "Đã xác nhận"**; khách không tự hủy được nữa. Đơn COD vẫn do admin duyệt.
 - Đơn ZaloPay đã thanh toán rồi bị hủy: chỉ ghi nhận hủy, **không hoàn tiền** (hoàn tiền xử lý ngoài hệ thống; chưa tích hợp hoàn tiền ZaloPay).
 - Khóa dùng chung chỉ dành cho sandbox, không dùng cho tiền thật.
 
@@ -250,7 +251,7 @@ Phương thức chọn khi đặt hàng (`paymentMethod`): `cod`, `bank_transfer
 | Email | Khi nào | Gửi cho | Nội dung chính |
 |---|---|---|---|
 | **OTP đặt lại mật khẩu** | Khách yêu cầu quên mật khẩu (mục 2) | Chủ tài khoản | Mã OTP 6 số trong các ô riêng, thời hạn (2 phút), cảnh báo bảo mật |
-| **Đơn đã thanh toán, cần phê duyệt** | ZaloPay xác nhận thanh toán một đơn lần đầu (mục 9.3) | **Tất cả admin đang hoạt động** (mỗi người một email) | Nhãn "ĐÃ THANH TOÁN", mã đơn, tổng tiền, tên và số điện thoại khách, sản phẩm, nút **Xem và phê duyệt đơn** tới `/admin/orders/<id>` |
+| **Đơn đã thanh toán, đã tự động duyệt** | ZaloPay xác nhận thanh toán một đơn lần đầu (mục 9.3) | **Tất cả admin đang hoạt động** (mỗi người một email) | Nhãn "ĐÃ THANH TOÁN", mã đơn, tổng tiền, tên và số điện thoại khách, sản phẩm, nút **Xem đơn và chuẩn bị hàng** tới `/admin/orders/<id>` |
 | **Đơn đã giao thành công** | Admin chuyển đơn sang "Giao hàng thành công" (mục 8) | **Khách** của đơn | Cảm ơn, mã đơn, tổng tiền, sản phẩm, nút **Xem đơn và đánh giá sản phẩm** tới `/user/orders/<mã>` |
 
 **Cách gửi hai email thông báo bằng aspect (AOP)** (theo quy ước "tác vụ phụ chạy bất đồng bộ bằng aspect")
@@ -369,12 +370,14 @@ Tất cả quản lý ở khu vực admin, mục **Nội dung** và **Cài đặ
 
 **Các bước:** mở khung chat, thấy lời chào và vài câu hỏi gợi ý; gõ câu hỏi hoặc bấm gợi ý; nhận câu trả lời.
 
-**Cách hoạt động** (`ChatbotService`): **không dùng AI**, trả lời theo từ khóa trên danh sách hỏi đáp.
+**Khi có khóa AI** (`ChatbotAiService`): hệ thống lọc tối đa 12 sản phẩm còn hàng theo danh mục, loại đá, khoảng giá khách nhắc tới, gửi kèm hỏi đáp, thông tin cửa hàng và tối đa 6 tin gần nhất cho Gemini. Câu trả lời kèm thẻ sản phẩm có link. Không tra cứu đơn hàng. Email, số điện thoại khách gõ được che trước khi gửi.
+
+**Khi không có khóa hoặc AI lỗi** (`ChatbotService`): trả lời theo từ khóa trên danh sách hỏi đáp như các bước dưới đây.
 1. `GET /chatbot/suggestions`: lời chào và 4 câu hỏi đầu.
 2. `POST /chatbot/ask`: chuẩn hóa câu hỏi (chữ thường, bỏ dấu tiếng Việt, bỏ dấu câu). Chấm điểm từng FAQ: **3 điểm** cho mỗi từ khóa hoặc cụm từ khóa xuất hiện trong câu hỏi (theo ranh giới từ), cộng **1 điểm** cho mỗi từ quan trọng của câu hỏi FAQ (bỏ từ dừng, từ dưới 3 ký tự) có trong câu hỏi. Chọn FAQ điểm cao nhất, **cần tối thiểu 3 điểm**; hòa thì ưu tiên thứ tự nhỏ hơn.
 3. Có kết quả thì trả câu trả lời cùng gợi ý khác. Không đạt ngưỡng thì trả thông báo dự phòng kèm **hotline và email** cửa hàng và gợi ý các câu gần nhất.
 - **Giới hạn:** khoảng **20 câu mỗi phút cho mỗi địa chỉ IP** (cửa sổ 60 giây, lưu Redis); vượt thì trả `429 RATE_LIMITED` kèm số giây phải chờ.
-- Nội dung câu hỏi chỉ dùng để chấm điểm trong bộ nhớ, **không ghi log, không lưu**.
+- Nội dung câu hỏi **không ghi log, không lưu vào DB**. Khi dùng AI, câu hỏi được gửi cho Google; Redis giữ câu trả lời 10 phút (khóa là mã băm).
 - Lịch sử trò chuyện lưu tạm ở trình duyệt của khách.
 
 ---
@@ -390,3 +393,26 @@ Tất cả quản lý ở khu vực admin, mục **Nội dung** và **Cài đặ
 - **Chống xung đột đồng thời:** khóa dòng (`FOR UPDATE`) khi đổi trạng thái đơn, ghi nhận thanh toán, đổi quyền; trừ kho bằng câu lệnh có điều kiện; khóa duy nhất ở DB làm lưới an toàn cuối cho dữ liệu trùng.
 - **Giờ giấc:** thống kê và mã đơn tính theo **giờ Việt Nam**; dữ liệu lưu thời gian UTC.
 - **Kiểm thử:** be dùng Vitest (đơn vị, e2e với DB thật), fe dùng Vitest và Testing Library. Test e2e thay `MailService` bằng bản giả để không gửi email thật.
+
+---
+
+## 19. Gợi ý sản phẩm và phân tích doanh thu bằng AI
+
+Cấu hình khóa và model: xem [README, mục 5 và 6.12](../README.md#5-biến-môi-trường). Model chính lỗi thì gọi model dự phòng.
+
+### Gợi ý sản phẩm
+
+**Người dùng:** khách và người đã đăng nhập; khối **Gợi ý cho bạn** ở trang chủ và trang chi tiết sản phẩm.
+
+1. Trình duyệt ghi lịch sử xem (tối đa 30 sản phẩm) và gửi tới `POST /recommendations`; người đã đăng nhập được tính thêm giỏ hàng và đơn chưa hủy.
+2. Thuật toán chấm điểm: mua 8, trong giỏ 4, mỗi lượt xem 1 (tối đa 5), nhân với độ giống nhau (danh mục, chất liệu, loại đá, tầm giá ±30%, đối tượng). Bỏ sản phẩm đã mua, đang trong giỏ, đang xem.
+3. Gemini chọn 4 trong tối đa 12 sản phẩm đề cử; AI lỗi thì lấy 4 sản phẩm điểm cao nhất. Kết quả AI dùng lại trong 1 giờ.
+- Chưa có tín hiệu thì ẩn khối.
+
+### Phân tích doanh thu
+
+**Người dùng:** admin; trang Tổng quan, nút **Phân tích kỳ đang chọn**.
+
+1. `POST /admin/stats/analysis?from=&to=`: hệ thống tính doanh thu kỳ này và kỳ liền trước, % thay đổi, giá trị đơn trung bình, đơn theo trạng thái, 5 sản phẩm bán chạy, mẫu sắp hết, doanh thu theo ngày.
+2. Gemini viết nhận xét 4 mục: tổng quan, bán chạy, cần lưu ý, việc nên làm. Chỉ gửi số tổng hợp và tên sản phẩm.
+- Số liệu không đổi thì dùng lại bản phân tích trong 10 phút. Chưa có khóa hoặc AI lỗi thì hiện thông báo.
