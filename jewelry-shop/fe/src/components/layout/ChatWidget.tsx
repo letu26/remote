@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { ChatIcon, CloseIcon } from "@/components/ui/Icons";
 import { useAsyncData } from "@/hooks/useAsyncData";
@@ -16,6 +17,7 @@ import {
   type ChatMessage,
 } from "@/utils/chat-history";
 import { isApiError } from "@/utils/errors";
+import { formatVND } from "@/utils/format";
 import { notify } from "@/utils/notify";
 
 const DEFAULT_GREETING = "Xin chào! Mình có thể giúp bạn giải đáp về sản phẩm, bảo hành, đổi trả và giao hàng.";
@@ -40,7 +42,10 @@ function Suggestions({ items, disabled, onPick }: { items: ChatSuggestion[]; dis
   );
 }
 
-/** Chatbot CSKH theo từ khóa: gợi ý, hỏi đáp, lịch sử trong sessionStorage. */
+/** Số tin gần nhất gửi kèm để AI hiểu câu hỏi nối tiếp (khớp giới hạn của backend). */
+const CONTEXT_MESSAGES = 6;
+
+/** Chatbot tư vấn: gợi ý, hỏi đáp, sản phẩm đề xuất, lịch sử trong sessionStorage. */
 export function ChatWidget() {
   const info = useSiteInfo();
   const [open, setOpen] = useState(false);
@@ -83,10 +88,14 @@ export function ChatWidget() {
     lock.current = true;
     setPending(true);
     setText("");
+    const history = messages
+      .filter((m) => !m.error)
+      .slice(-CONTEXT_MESSAGES)
+      .map((m) => ({ role: m.role, text: m.text.slice(0, 2000) }));
     push({ role: "user", text: q });
     try {
-      const res = await chatbotService.ask(q);
-      push({ role: "bot", text: res.answer, suggestions: res.suggestions });
+      const res = await (history.length ? chatbotService.ask(q, history) : chatbotService.ask(q));
+      push({ role: "bot", text: res.answer, suggestions: res.suggestions, products: res.products });
     } catch (err) {
       if (isApiError(err) && err.code === "RATE_LIMITED") {
         const secs = err.retryAfterSeconds && err.retryAfterSeconds > 0 ? err.retryAfterSeconds : 30;
@@ -177,6 +186,21 @@ export function ChatWidget() {
                   >
                     {m.text}
                   </p>
+                  {m.products && m.products.length > 0 && (
+                    <ul aria-label="Sản phẩm được tư vấn" className="mt-2 space-y-1.5">
+                      {m.products.map((product) => (
+                        <li key={product.slug}>
+                          <Link
+                            href={`/products/${product.slug}`}
+                            className="block rounded-ui border border-line bg-paper px-3 py-2 hover:border-gold-deep"
+                          >
+                            <span className="block text-ink">{product.name}</span>
+                            <span className="text-xs font-semibold text-gold-deep">{formatVND(product.salePrice ?? product.price)}</span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                   {m.role === "bot" && m.suggestions && (
                     <Suggestions items={m.suggestions} disabled={blocked} onPick={(q) => void send(q)} />
                   )}
@@ -210,9 +234,10 @@ export function ChatWidget() {
                 {wait > 0 ? `Chờ ${wait}s` : "Gửi"}
               </button>
             </div>
-            <p className="mt-1 text-right text-xs text-muted" aria-live="off">
-              {text.length}/{CHAT_MAX_LENGTH}
-            </p>
+            <div className="mt-1 flex justify-between gap-2 text-xs text-muted">
+              <p>Không nhập thông tin cá nhân.</p>
+              <p aria-live="off">{text.length}/{CHAT_MAX_LENGTH}</p>
+            </div>
           </form>
         </section>
       )}

@@ -12,6 +12,10 @@ import { HttpStatus } from '@nestjs/common';
 import { BusinessException, ErrorCode } from '../src/exceptions/index.js';
 import { ImageStorage } from '../src/modules/media/services/image-storage.js';
 
+// Chatbot được kiểm thử ở chế độ không AI: biến môi trường rỗng thắng giá trị trong .env.
+process.env.GEMINI_API_KEY = '';
+process.env.GEMINI_API_KEY_CHATBOT = '';
+
 const runId = Date.now().toString(36);
 const TAG = `TMP-E2E ${runId}`; // tiền tố tiêu đề/nhãn
 const SLUGP = `tmp-e2e-${runId}`; // tiền tố slug

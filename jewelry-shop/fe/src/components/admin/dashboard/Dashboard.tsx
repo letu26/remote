@@ -14,11 +14,14 @@ import { formatVND } from "@/utils/format";
 import { isCancel } from "axios";
 import { OrderStatusBadge } from "../order/OrderBadges";
 import { ORDER_STATUSES } from "../order/order-meta";
+import { AiAnalysis } from "./AiAnalysis";
 import { RevenueChart } from "./RevenueChart";
 import { presetRange, validateRange, vnDateString } from "./date-utils";
 
 const PRESETS = [7, 30, 90] as const;
 const DEFAULT_DAYS = 30;
+/** Nhãn nằm cạnh ô ngày để cả bộ lọc gọn trên một hàng. */
+const INLINE_FIELD = "[&>div]:flex [&>div]:items-center [&>div]:gap-2 [&>div]:space-y-0 [&_label]:shrink-0 [&_input]:w-40";
 
 /** Khoảng ngày từ URL: `from`+`to` hợp lệ, hoặc `days` (7/30/90), mặc định 30 ngày. */
 export function resolveRange(params: URLSearchParams, today: string): { range: DateRange; days: number | null } {
@@ -179,7 +182,7 @@ function DashboardBody({ today, params, onNavigate }: { today: string; params: U
   const ov = overview.data;
   return (
     <div className="space-y-4">
-      <section aria-label="Khoảng thời gian" className="flex flex-wrap items-end gap-3 rounded-lg border border-line bg-paper p-4 shadow-card">
+      <section aria-label="Khoảng thời gian" className="flex flex-wrap items-center gap-3 rounded-lg border border-line bg-paper p-4 shadow-card">
         <div className="flex gap-1.5" role="group" aria-label="Chọn nhanh">
           {PRESETS.map((d) => (
             <Button key={d} size="sm" variant={days === d ? "primary" : "secondary"} aria-pressed={days === d} onClick={() => onNavigate(d === DEFAULT_DAYS ? "" : `?days=${d}`)}>
@@ -187,8 +190,8 @@ function DashboardBody({ today, params, onNavigate }: { today: string; params: U
             </Button>
           ))}
         </div>
-        <div className="w-40"><Field label="Từ ngày" name="stats-from" type="date" value={from} max={to || undefined} onChange={(e) => setFrom(e.target.value)} /></div>
-        <div className="w-40"><Field label="Đến ngày" name="stats-to" type="date" value={to} min={from || undefined} onChange={(e) => setTo(e.target.value)} /></div>
+        <div className={INLINE_FIELD}><Field label="Từ ngày" name="stats-from" type="date" value={from} max={to || undefined} onChange={(e) => setFrom(e.target.value)} /></div>
+        <div className={INLINE_FIELD}><Field label="Đến ngày" name="stats-to" type="date" value={to} min={from || undefined} onChange={(e) => setTo(e.target.value)} /></div>
         <Button size="sm" variant="secondary" onClick={applyCustom}>Áp dụng</Button>
         {rangeError && <p role="alert" className="w-full text-xs text-danger">{rangeError}</p>}
       </section>
@@ -224,6 +227,8 @@ function DashboardBody({ today, params, onNavigate }: { today: string; params: U
       >
         {(points) => <RevenueChart points={points} granularity={granularity} />}
       </Block>
+
+      <AiAnalysis range={range} />
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Block fixed title="Đơn hàng theo trạng thái" state={byStatus} isEmpty={(d) => ORDER_STATUSES.every((s) => !d[s])} emptyText="Chưa có đơn hàng trong kỳ.">

@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { ProductBuyBox, ProductGallery } from "@/components/product/ProductDetailClient";
 import { ProductCard } from "@/components/product/ProductCard";
 import { LiveRating, ReviewSection } from "@/components/product/ReviewSection";
+import { Recommendations } from "@/components/recommendation/Recommendations";
 import { Badge } from "@/components/ui/Badge";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { ErrorState } from "@/components/ui/ErrorState";
@@ -198,6 +199,8 @@ async function ProductDetailContent({ params }: { params: PageProps<"/products/[
           </ul>
         </section>
       )}
+
+      <Recommendations productId={product.id} />
     </div>
   );
 }

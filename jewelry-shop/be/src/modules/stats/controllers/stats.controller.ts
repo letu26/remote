@@ -1,12 +1,22 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Post, Query } from '@nestjs/common';
 import { AdminOnly } from '../../../decorators/admin-only.decorator.js';
 import { LowStockQueryDto, RevenueQueryDto, StatsRangeQueryDto, TopQueryDto } from '../dtos/stats.dtos.js';
+import { RevenueAnalysisService } from '../services/revenue-analysis.service.js';
 import { StatsService } from '../services/stats.service.js';
 
 @Controller('admin/stats')
 @AdminOnly()
 export class StatsController {
-  constructor(private readonly service: StatsService) {}
+  constructor(
+    private readonly service: StatsService,
+    private readonly analysisService: RevenueAnalysisService,
+  ) {}
+
+  @Post('analysis')
+  @HttpCode(HttpStatus.OK)
+  analysis(@Query() query: StatsRangeQueryDto) {
+    return this.analysisService.analyze(query);
+  }
 
   @Get('overview')
   overview(@Query() query: StatsRangeQueryDto) {

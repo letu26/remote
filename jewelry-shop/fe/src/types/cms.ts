@@ -75,4 +75,13 @@ export interface ChatAnswer {
   matched: ChatSuggestion | null;
   suggestions: ChatSuggestion[];
   fallback: boolean;
+  products?: ChatProduct[];
+}
+
+export interface ChatProduct {
+  name: string;
+  slug: string;
+  price: number;
+  salePrice: number | null;
+  imageUrl: string | null;
 }

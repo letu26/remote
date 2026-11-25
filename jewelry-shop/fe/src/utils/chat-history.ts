@@ -1,10 +1,11 @@
-import type { ChatSuggestion } from "@/types/cms";
+import type { ChatProduct, ChatSuggestion } from "@/types/cms";
 
 export interface ChatMessage {
   id: number;
   role: "user" | "bot";
   text: string;
   suggestions?: ChatSuggestion[];
+  products?: ChatProduct[];
   /** Tin lỗi do giao diện tạo (mạng, giới hạn tốc độ). */
   error?: boolean;
 }

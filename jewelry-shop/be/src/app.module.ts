@@ -28,6 +28,7 @@ import { PaymentsModule } from './modules/payments/payments.module.js';
 import { ShippingMethodsModule } from './modules/shipping-methods/shipping-methods.module.js';
 import { SettingsModule } from './modules/settings/settings.module.js';
 import { PromotionsModule } from './modules/promotions/promotions.module.js';
+import { RecommendationsModule } from './modules/recommendations/recommendations.module.js';
 import { ReviewsModule } from './modules/reviews/reviews.module.js';
 import { RedisModule } from './modules/redis/redis.module.js';
 import { TokenBlacklistModule } from './modules/token-blacklist/token-blacklist.module.js';
@@ -68,6 +69,7 @@ import { ZaloPayModule } from './modules/zalopay/zalopay.module.js';
     SettingsModule,
     ShippingMethodsModule,
     PromotionsModule,
+    RecommendationsModule,
     ReviewsModule,
     UsersModule,
     WishlistsModule,

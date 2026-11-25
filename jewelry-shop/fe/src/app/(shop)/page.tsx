@@ -1,6 +1,7 @@
 import { CategoriesBlock, CollectionsBlock, ProductBlock } from "@/components/home/HomeBlocks";
 import { ArticlesBlock, HeroBlock, PromoBlock } from "@/components/home/CmsBlocks";
 import { PolicyBlock } from "@/components/home/HomeSections";
+import { Recommendations } from "@/components/recommendation/Recommendations";
 
 // Các khối dữ liệu tự tải ở trình duyệt (từng khối có loading/lỗi riêng), nên trang chủ là tĩnh.
 export default function Home() {
@@ -9,6 +10,7 @@ export default function Home() {
       <HeroBlock />
       <PromoBlock />
       <CategoriesBlock />
+      <Recommendations />
       <ProductBlock title="Sản phẩm mới" kicker="Vừa ra mắt" href="/products?sort=newest" params={{ sort: "newest" }} tinted />
       <ProductBlock title="Bán chạy nhất" kicker="Được yêu thích" href="/products?sort=bestseller" params={{ sort: "bestseller" }} />
       <ProductBlock title="Đang giảm giá" kicker="Ưu đãi" href="/products?sale=1" params={{ onSale: true }} tinted />

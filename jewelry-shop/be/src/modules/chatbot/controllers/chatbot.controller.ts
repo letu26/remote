@@ -20,6 +20,6 @@ export class ChatbotController {
   @Post('ask')
   @HttpCode(HttpStatus.OK)
   ask(@Req() req: Request, @Body() dto: AskChatbotDto) {
-    return this.service.ask(req.ip ?? 'unknown', dto.message);
+    return this.service.ask(req.ip ?? 'unknown', dto.message, dto.history);
   }
 }
