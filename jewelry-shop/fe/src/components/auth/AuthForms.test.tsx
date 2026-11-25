@@ -33,6 +33,34 @@ const submitBtn = (name: RegExp) => screen.getByRole("button", { name });
 beforeEach(() => { register.mockReset(); login.mockReset(); replace.mockClear(); });
 afterEach(cleanup);
 
+describe("RegisterForm: họ tên chỉ nhập chữ", () => {
+  it("gõ số hoặc ký tự đặc biệt -> bỏ ký tự đó và hiện thông báo dưới ô", () => {
+    render(<><RegisterForm /><ToastHost /></>);
+    const input = screen.getByLabelText("Họ và tên") as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "Nam123" } });
+    expect(input.value).toBe("Nam");
+    expect(screen.getByRole("alert")).toHaveTextContent("chỉ được nhập chữ cái");
+  });
+
+  it("gõ quá 25 ký tự -> cắt còn 25 và báo giới hạn độ dài", () => {
+    render(<><RegisterForm /><ToastHost /></>);
+    const input = screen.getByLabelText("Họ và tên") as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "A".repeat(30) } });
+    expect(input.value).toHaveLength(25);
+    expect(screen.getByRole("alert")).toHaveTextContent("từ 2 đến 25 ký tự");
+  });
+
+  it("gõ tiếp ký tự hợp lệ -> thông báo biến mất", () => {
+    render(<><RegisterForm /><ToastHost /></>);
+    const input = screen.getByLabelText("Họ và tên") as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "Nam1" } });
+    expect(screen.getByRole("alert")).toBeInTheDocument();
+    fireEvent.change(input, { target: { value: "Nam Văn" } });
+    expect(input.value).toBe("Nam Văn");
+    expect(screen.queryByText(/chỉ được nhập chữ cái/)).toBeNull();
+  });
+});
+
 describe("RegisterForm", () => {
   it("lỗi validate phía client, không gọi API", async () => {
     render(<><RegisterForm /><ToastHost /></>);

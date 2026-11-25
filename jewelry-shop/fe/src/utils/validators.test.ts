@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
   validateAddress, validateReview, sanitizeOtp, validateConfirm, validateEmail, validateLogin, validateOtp, validatePassword, validatePhone,
+  FULL_NAME_CHARS_MESSAGE,
+  fullNameNotice,
+  sanitizeFullName,
+  validateFullName,
   validateRegister,
 } from "./validators";
 
@@ -74,5 +78,39 @@ describe("validateReview", () => {
   it("nhận xét tối đa 1000 ký tự sau khi cắt khoảng trắng", () => {
     expect(validateReview({ rating: 5, comment: `  ${"a".repeat(1000)}  ` })).toEqual({});
     expect(validateReview({ rating: 5, comment: "a".repeat(1001) }).comment).toBeTruthy();
+  });
+});
+
+describe("validateFullName: chỉ cho phép chữ", () => {
+  it.each(["Nguyễn Văn Nam", "Lê Thị Bích Ngọc", "Đặng Khánh Linh", "Nguyễn T. Lan", "O'Brien", "Anne-Marie", "Tú"])(
+    "chấp nhận %s",
+    (name) => expect(validateFullName(name)).toBeUndefined(),
+  );
+  it.each(["12345", "abc123", "Nam 2", "@@", "A_B", "123 Nguyễn", "-Nam", "Nam<script>"])("từ chối %s", (name) =>
+    expect(validateFullName(name)).toBe(FULL_NAME_CHARS_MESSAGE),
+  );
+  it("lỗi độ dài (2 đến 25) và để trống", () => {
+    expect(validateFullName("   ")).toBe("Vui lòng nhập họ và tên");
+    expect(validateFullName("A")).toBe("Họ và tên từ 2 đến 25 ký tự");
+    expect(validateFullName("A".repeat(26))).toBe("Họ và tên từ 2 đến 25 ký tự");
+  });
+});
+
+describe("sanitizeFullName: lọc khi gõ hoặc dán", () => {
+  it("bỏ số và ký tự đặc biệt, giữ chữ có dấu, khoảng trắng, nháy, gạch nối, chấm", () => {
+    expect(sanitizeFullName("Nguyễn Văn Nam123")).toBe("Nguyễn Văn Nam");
+    expect(sanitizeFullName("12345")).toBe("");
+    expect(sanitizeFullName("Nam<script>@#")).toBe("Namscript");
+    expect(sanitizeFullName("O'Brien - Anne.Marie")).toBe("O'Brien - Anne.Marie");
+    expect(sanitizeFullName("Đặng Khánh Linh")).toBe("Đặng Khánh Linh");
+  });
+  it("cắt tối đa 25 ký tự", () => {
+    expect(sanitizeFullName("A".repeat(150))).toHaveLength(25);
+  });
+  it("fullNameNotice: báo ký tự không hợp lệ, báo quá 25 ký tự, rỗng khi hợp lệ", () => {
+    expect(fullNameNotice("Nam1")).toMatch(/chỉ được nhập chữ cái/);
+    expect(fullNameNotice("A".repeat(26))).toBe("Họ và tên từ 2 đến 25 ký tự");
+    expect(fullNameNotice("A".repeat(25))).toBe("");
+    expect(fullNameNotice("Nguyễn Văn Nam")).toBe("");
   });
 });

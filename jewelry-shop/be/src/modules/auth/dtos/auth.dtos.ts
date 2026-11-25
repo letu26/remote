@@ -1,12 +1,13 @@
 import { Equals, IsEmail, IsNotEmpty, IsString, Length, Matches, MaxLength, MinLength } from 'class-validator';
 import { Match } from '../../../utils/match.decorator.js';
 import { Trim, TrimLowerCase } from '../../../utils/transforms.js';
-import { PHONE_REGEX } from '../../users/dtos/user.dtos.js';
+import { FULL_NAME_CHARS_MESSAGE, FULL_NAME_MAX, FULL_NAME_REGEX, PHONE_REGEX } from '../../users/dtos/user.dtos.js';
 
 export class RegisterDto {
   @Trim()
   @IsString({ message: 'Họ tên không hợp lệ' })
-  @Length(2, 100, { message: 'Họ tên phải từ 2 đến 100 ký tự' })
+  @Length(2, FULL_NAME_MAX, { message: `Họ tên phải từ 2 đến ${FULL_NAME_MAX} ký tự` })
+  @Matches(FULL_NAME_REGEX, { message: FULL_NAME_CHARS_MESSAGE })
   fullName: string;
 
   @TrimLowerCase()

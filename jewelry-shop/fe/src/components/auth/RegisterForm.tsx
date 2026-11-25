@@ -8,7 +8,7 @@ import { ROUTES } from "@/constants";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
 import { authService } from "@/services/auth.service";
 import { notify } from "@/utils/notify";
-import { validateRegister } from "@/utils/validators";
+import { fullNameNotice, sanitizeFullName, validateRegister } from "@/utils/validators";
 
 const initial = {
   fullName: "",
@@ -22,10 +22,14 @@ const initial = {
 export function RegisterForm() {
   const router = useRouter();
   const [values, setValues] = useState(initial);
+  // Hiện ngay dưới ô họ tên khi người dùng vừa gõ hoặc dán số/ký tự không hợp lệ (ký tự đó đã bị bỏ).
+  const [nameNotice, setNameNotice] = useState("");
   const { errors, submitting, run, clearError } = useFormSubmit();
 
   const set = (k: keyof typeof initial) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = k === "acceptTerms" ? e.target.checked : e.target.value;
+    const raw = k === "acceptTerms" ? e.target.checked : e.target.value;
+    const value = k === "fullName" && typeof raw === "string" ? sanitizeFullName(raw) : raw;
+    if (k === "fullName" && typeof raw === "string") setNameNotice(fullNameNotice(raw));
     setValues((v) => ({ ...v, [k]: value }));
     clearError(k);
   };
@@ -50,7 +54,7 @@ export function RegisterForm() {
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-5">
       <Field label="Họ và tên" name="fullName" autoComplete="name" value={values.fullName}
-        onChange={set("fullName")} error={errors.fullName} />
+        onChange={set("fullName")} error={errors.fullName ?? (nameNotice || undefined)} />
       <Field label="Email" name="email" type="email" autoComplete="email" value={values.email}
         onChange={set("email")} error={errors.email} />
       <Field label="Số điện thoại" name="phone" type="tel" inputMode="numeric" autoComplete="tel"

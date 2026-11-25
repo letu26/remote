@@ -5,11 +5,17 @@ import type { UserRole, UserStatus } from '../models/user.entity.js';
 
 export const PHONE_REGEX = /^0\d{9}$/;
 
+/** Họ tên: 2 đến 25 ký tự, bắt đầu bằng chữ cái, chỉ gồm chữ cái (mọi bảng chữ, có dấu), khoảng trắng, dấu nháy, gạch nối, dấu chấm. Khớp với fe (validators.ts). */
+export const FULL_NAME_MAX = 25;
+export const FULL_NAME_REGEX = /^\p{L}[\p{L}\s'.-]*$/u;
+export const FULL_NAME_CHARS_MESSAGE = 'Họ tên chỉ được gồm chữ cái, không chứa số hoặc ký tự đặc biệt';
+
 export class UpdateProfileDto {
   @IsOptional()
   @Trim()
   @IsString({ message: 'Họ tên không hợp lệ' })
-  @Length(2, 100, { message: 'Họ tên phải từ 2 đến 100 ký tự' })
+  @Length(2, FULL_NAME_MAX, { message: `Họ tên phải từ 2 đến ${FULL_NAME_MAX} ký tự` })
+  @Matches(FULL_NAME_REGEX, { message: FULL_NAME_CHARS_MESSAGE })
   fullName?: string;
 
   @IsOptional()

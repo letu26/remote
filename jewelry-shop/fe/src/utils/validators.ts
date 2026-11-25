@@ -15,10 +15,31 @@ export function validateEmail(v: string): string | undefined {
   if (!EMAIL_REGEX.test(v.trim())) return "Email không đúng định dạng";
 }
 
+/** Độ dài tối đa của họ tên (đăng ký và hồ sơ). */
+export const FULL_NAME_MAX = 25;
+
+/** Thông báo hiện dưới ô họ tên khi người dùng nhập số hoặc ký tự không hợp lệ. */
+export const FULL_NAME_CHARS_MESSAGE = "Họ và tên chỉ được nhập chữ cái, không nhập số hoặc ký tự đặc biệt";
+export const FULL_NAME_LENGTH_MESSAGE = `Họ và tên từ 2 đến ${FULL_NAME_MAX} ký tự`;
+
+/** Họ tên khi đang gõ hoặc dán: bỏ số và ký tự đặc biệt (chỉ giữ chữ cái, khoảng trắng, dấu nháy, gạch nối, dấu chấm), tối đa 25 ký tự. */
+export function sanitizeFullName(v: string): string {
+  return v.replace(/[^\p{L}\s'.-]/gu, "").slice(0, FULL_NAME_MAX);
+}
+
+/** Thông báo cần hiện dưới ô khi giá trị người dùng vừa nhập bị lọc hoặc cắt; rỗng nếu không có gì bị bỏ. */
+export function fullNameNotice(raw: string): string {
+  if (raw.replace(/[^\p{L}\s'.-]/gu, "") !== raw) return FULL_NAME_CHARS_MESSAGE;
+  if (raw.length > FULL_NAME_MAX) return FULL_NAME_LENGTH_MESSAGE;
+  return "";
+}
+
 export function validateFullName(v: string): string | undefined {
   const t = v.trim();
   if (!t) return "Vui lòng nhập họ và tên";
-  if (t.length < 2 || t.length > 100) return "Họ và tên từ 2 đến 100 ký tự";
+  if (t.length < 2 || t.length > FULL_NAME_MAX) return FULL_NAME_LENGTH_MESSAGE;
+  // Chỉ chữ cái (có dấu tiếng Việt, mọi bảng chữ), khoảng trắng, dấu nháy, gạch nối và dấu chấm; không cho số hay ký tự đặc biệt khác.
+  if (!/^\p{L}[\p{L}\s'.-]*$/u.test(t)) return FULL_NAME_CHARS_MESSAGE;
 }
 
 export function validatePassword(v: string, label = "mật khẩu"): string | undefined {
