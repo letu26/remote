@@ -22,7 +22,7 @@ export interface OrderMailInfo {
 export class NotificationRepository {
   constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
 
-  /** Quản trị viên đang hoạt động (nhận email phê duyệt đơn). */
+  /** Quản trị viên đang hoạt động (nhận email báo đơn đã thanh toán). */
   findActiveAdmins(): Promise<MailRecipient[]> {
     return this.dataSource.query("SELECT email, fullName FROM users WHERE role = 'admin' AND status = 'active'");
   }

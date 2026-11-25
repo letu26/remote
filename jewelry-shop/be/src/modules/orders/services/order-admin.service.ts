@@ -101,9 +101,14 @@ export class OrderAdminService {
     const outcome = await this.orders.withLockedOrder({ id }, async (tx) => {
       this.payments.assertManualPaymentAllowed(tx.order);
       const paid = dto.paymentStatus === PaymentStatus.PAID;
-      await tx.update({ paymentStatus: dto.paymentStatus, paidAt: paid ? new Date() : null });
+      // Xác nhận đã nhận tiền thì duyệt luôn đơn đang chờ. Bỏ xác nhận không đưa đơn về lại "chờ xác nhận".
+      const autoConfirm = paid && tx.order.status === OrderStatus.PENDING;
+      const status = autoConfirm ? OrderStatus.CONFIRMED : tx.order.status;
+      await tx.update({ status, paymentStatus: dto.paymentStatus, paidAt: paid ? new Date() : null });
       const label = paid ? 'Xác nhận đã nhận thanh toán' : 'Hủy xác nhận thanh toán';
-      await tx.addHistory(tx.order.status, adminId, dto.note?.trim() ? `${label}: ${dto.note.trim()}` : label);
+      const action = autoConfirm ? `${label}, tự động duyệt đơn` : label;
+      const note = dto.note?.trim() ? `${action}: ${dto.note.trim()}` : action;
+      await tx.addHistory(status, adminId, note.slice(0, 255));
       return true;
     });
     if (outcome === null) throw this.views.notFound();

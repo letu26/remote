@@ -125,10 +125,13 @@ export class ZaloPayTransactionRepository {
       const order = orderRows[0];
       if (!order) return { outcome: 'not_found', orderId: tx.orderId };
       if (order.paymentStatus !== PaymentStatus.PAID) {
-        await manager.query("UPDATE orders SET paymentStatus = 'paid', paidAt = NOW() WHERE id = ?", [tx.orderId]);
+        // Đã nhận tiền thì đơn đang chờ được duyệt tự động; đơn đã hủy hoặc đã duyệt thì giữ nguyên trạng thái.
+        const autoConfirm = order.status === OrderStatus.PENDING;
+        const status = autoConfirm ? OrderStatus.CONFIRMED : order.status;
+        await manager.query("UPDATE orders SET paymentStatus = 'paid', paidAt = NOW(), status = ? WHERE id = ?", [status, tx.orderId]);
         await manager.query(
           'INSERT INTO order_status_history (orderId, status, changedById, note) VALUES (?, ?, NULL, ?)',
-          [tx.orderId, order.status, historyNote.slice(0, 255)],
+          [tx.orderId, status, (autoConfirm ? `${historyNote}, tự động duyệt đơn` : historyNote).slice(0, 255)],
         );
       }
       return { outcome: 'settled', orderId: tx.orderId };

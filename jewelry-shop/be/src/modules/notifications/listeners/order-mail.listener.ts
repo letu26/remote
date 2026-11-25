@@ -6,7 +6,7 @@ import { NotificationRepository } from '../repositories/notification.repository.
 
 /**
  * Người nghe sự kiện đơn hàng và gửi email tương ứng (aspect @PublishAfter phát sự kiện, nghiệp vụ không biết đến email):
- * - order.paid: báo tất cả admin vào phê duyệt đơn.
+ * - order.paid: báo tất cả admin có đơn đã tự động duyệt, cần chuẩn bị hàng.
  * - order.delivered: báo khách đơn đã giao thành công (bước cuối).
  */
 @Injectable()

@@ -43,10 +43,10 @@ export class MailService {
       .catch((error: unknown) => this.logger.error(`Send OTP mail failed: ${(error as Error)?.message}`));
   }
 
-  /** Báo cho từng admin biết có đơn vừa thanh toán xong cần phê duyệt. Gửi riêng từng người; lỗi chỉ ghi log. */
+  /** Báo cho từng admin biết có đơn vừa thanh toán xong (đã tự động duyệt) để chuẩn bị hàng. Gửi riêng từng người; lỗi chỉ ghi log. */
   sendOrderPaidMail(admins: { email: string; fullName: string }[], order: OrderPaidMailData): void {
-    const subject = `Đơn ${order.code} đã thanh toán, cần phê duyệt`;
-    const text = `Đơn hàng ${order.code} vừa được thanh toán ${order.paymentLabel} (${formatVnd(order.total)}).\n\nKhách hàng: ${order.customerName} - ${order.customerPhone}\nSản phẩm:\n${order.items.map((i) => `- ${i.name} x${i.quantity}`).join('\n')}\n\nMở đơn để phê duyệt: ${order.adminUrl}`;
+    const subject = `Đơn ${order.code} đã thanh toán, đã tự động duyệt`;
+    const text = `Đơn hàng ${order.code} vừa được thanh toán ${order.paymentLabel} (${formatVnd(order.total)}).\n\nKhách hàng: ${order.customerName} - ${order.customerPhone}\nSản phẩm:\n${order.items.map((i) => `- ${i.name} x${i.quantity}`).join('\n')}\n\nĐơn đã được duyệt tự động, mở đơn để chuẩn bị hàng: ${order.adminUrl}`;
     const from = this.config.get<string>('MAIL_FROM') ?? this.config.get<string>('MAIL_USER');
     for (const admin of admins) {
       this.getTransporter()
@@ -189,13 +189,13 @@ function button(url: string, label: string): string {
             <p style="margin:12px 0 0;font-size:12px;color:#55706c">Hoặc mở: ${escapeHtml(url)}</p>`;
 }
 
-/** Email báo admin có đơn đã thanh toán, cần vào phê duyệt. */
+/** Email báo admin có đơn đã thanh toán và tự động duyệt, cần chuẩn bị hàng. */
 function buildOrderPaidHtml(adminName: string, order: OrderPaidMailData): string {
   const body = `<tr>
           <td style="padding:28px 32px 4px">
             <span style="display:inline-block;padding:5px 12px;font-size:12px;font-weight:700;color:#0b5f4e;background:#dff3ee;border-radius:999px">ĐÃ THANH TOÁN</span>
-            <h1 style="margin:12px 0 8px;font-size:22px;color:#16302d">Có đơn hàng cần phê duyệt</h1>
-            <p style="margin:0;font-size:15px;line-height:1.6;color:#55706c">Xin chào <strong style="color:#16302d">${escapeHtml(adminName)}</strong>, khách vừa thanh toán xong đơn hàng bên dưới. Vui lòng vào xác nhận đơn để cửa hàng chuẩn bị hàng.</p>
+            <h1 style="margin:12px 0 8px;font-size:22px;color:#16302d">Có đơn hàng cần chuẩn bị</h1>
+            <p style="margin:0;font-size:15px;line-height:1.6;color:#55706c">Xin chào <strong style="color:#16302d">${escapeHtml(adminName)}</strong>, khách vừa thanh toán xong đơn hàng bên dưới. Đơn đã được duyệt tự động, vui lòng vào chuẩn bị hàng.</p>
           </td>
         </tr>
         <tr>
@@ -208,10 +208,10 @@ function buildOrderPaidHtml(adminName: string, order: OrderPaidMailData): string
           </td>
         </tr>
         <tr><td style="padding:12px 32px 4px">${itemRows(order.items)}</td></tr>
-        <tr><td align="center" style="padding:22px 32px 30px">${button(order.adminUrl, 'Xem và phê duyệt đơn')}</td></tr>`;
+        <tr><td align="center" style="padding:22px 32px 30px">${button(order.adminUrl, 'Xem đơn và chuẩn bị hàng')}</td></tr>`;
   return emailShell({
     subtitle: 'Thông báo cho quản trị viên',
-    preheader: `Đơn ${escapeHtml(order.code)} đã thanh toán ${formatVnd(order.total)}, cần phê duyệt.`,
+    preheader: `Đơn ${escapeHtml(order.code)} đã thanh toán ${formatVnd(order.total)}, đã tự động duyệt.`,
     body,
     footer: 'Email tự động từ hệ thống Lumière Gems.',
   });

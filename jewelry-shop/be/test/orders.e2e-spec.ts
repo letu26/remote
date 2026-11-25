@@ -861,7 +861,8 @@ describe('Admin: quản lý đơn', () => {
     expect(unpaid.body).toMatchObject({ paymentStatus: 'unpaid', paidAt: null });
     const [h] = await db.query<mysql.RowDataPacket[]>('SELECT status, changedById, note FROM order_status_history WHERE orderId=? ORDER BY id', [bank.id]);
     expect(h).toHaveLength(3);
-    expect(h[1]).toMatchObject({ status: 'pending', changedById: adminId });
+    expect(h[1]).toMatchObject({ status: 'confirmed', changedById: adminId }); // nhận tiền thì tự duyệt
+    expect(h[2].status).toBe('confirmed'); // bỏ xác nhận không đưa đơn về chờ duyệt
     expect(h[1].note).toBeTruthy();
     expectErr(await adm('patch', `/admin/orders/${cod.id}/payment`, { paymentStatus: 'paid' }), 409, 'INVALID_STATUS_TRANSITION');
     await adm('patch', `/admin/orders/${bank.id}/status`, { status: 'cancelled' });

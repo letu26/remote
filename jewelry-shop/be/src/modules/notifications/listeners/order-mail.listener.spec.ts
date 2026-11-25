@@ -23,7 +23,7 @@ function build(overrides: { admins?: { email: string; fullName: string }[]; orde
 }
 
 describe('OrderMailListener', () => {
-  it('đơn đã thanh toán -> gửi tất cả admin, link phê duyệt đúng, không có "/" thừa', async () => {
+  it('đơn đã thanh toán -> gửi tất cả admin, link đơn đúng, không có "/" thừa', async () => {
     const { listener, mail } = build();
     await listener.onOrderPaid(10);
     const [admins, data] = mail.sendOrderPaidMail.mock.calls[0] as [{ email: string }[], { adminUrl: string; customerName: string; total: number }];
